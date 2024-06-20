@@ -19,13 +19,27 @@ import useModalStore from "../store/modalStore";
 
 export default function Calendar() {
   const setIsOpen = useModalStore((state) => state.setIsOpen);
+
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
   const calendarFormat = useCalendarStore((state) => state.calendarFormat);
   const setCalendarFormat = useCalendarStore(
     (state) => state.setCalendarFormat
   );
-  const [events, setEvents] = useState();
+
+  const events = useCalendarStore((state) => state.events);
+  const setEvents = useCalendarStore((state) => state.setEvents);
+  const selectedEvent = useCalendarStore((state) => state.selectedEvent);
+  const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
+
+  const handleEventClick = (event) => {
+    setIsOpen();
+    setSelectedEvent(event);
+  };
+
+  useEffect(() => {
+    console.log(selectedEvent);
+  }, [selectedEvent]);
 
   const handleDayButton = () => {
     const today = new Date();
@@ -176,7 +190,7 @@ export default function Calendar() {
                           .map((event) => (
                             <motion.div
                               className={styles.event_container}
-                              onClick={setIsOpen}
+                              onClick={() => handleEventClick(event)}
                               key={event.id}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
