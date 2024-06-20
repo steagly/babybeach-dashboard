@@ -1,0 +1,9 @@
+.dashboard {
+  display: flex;
+}
+
+.home_container {
+  margin-left: 232px;
+  flex: 1;
+  padding-left: 18px;
+}

@@ -1,0 +1,65 @@
+.date_container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  font-size: 16px;
+  color: #525252;
+}
+
+.date_wrapper {
+  border: 1px solid #dedede;
+  border-radius: 6px;
+  padding: 12px;
+  background-color: white;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
+}
+
+.date_header {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 14px;
+  font-weight: 600;
+}
+
+.date_grid {
+  max-width: 297px;
+  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.date_day {
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.day_header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  padding: 4px;
+}
+
+.selected {
+  color: white;
+  background-color: #b17ed0;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.inactive {
+  cursor: default;
+  color: #b9b7b7;
+}
+
+.date_day:not(.inactive):hover {
+  color: white;
+  background-color: #b17ed0;
+}

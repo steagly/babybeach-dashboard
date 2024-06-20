@@ -1,0 +1,158 @@
+.main_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.main {
+  color: #525252;
+  padding: 0px 76px;
+  background: #ebf8ff;
+  min-width: 500px;
+  min-height: 677px;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.form {
+  display: flex;
+  padding: 35px 0px;
+  max-width: 100%;
+  max-height: 100%;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.input_input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0px 12px;
+  background: #ffffff;
+  border: 1px solid #dedede;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.svg_container {
+  cursor: pointer;
+  display: flex;
+  padding: 4px;
+  align-items: center;
+  width: 24px;
+  height: 100%;
+}
+
+.input_input_icon {
+  width: 18px;
+  height: 18px;
+}
+
+.svg_container path {
+  fill: #838383;
+  transition: fill 0.3s ease;
+}
+
+.svg_container:hover path {
+  fill: #525252;
+}
+
+.input_input_el {
+  padding: 14px 0px;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.input_input:focus-within {
+  border-color: #fff500;
+}
+
+.input_input_el::placeholder {
+  font-size: 12px;
+  color: #b2b1b1;
+}
+
+.input_input_el:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.logo_container {
+  display: flex;
+  padding: 35px 0px 35px 0px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.logo_container img {
+  width: 230px;
+  padding: 0px 0px 35px 0px;
+}
+
+p {
+  margin: 0;
+}
+
+h4,
+h2 {
+  margin: 0;
+}
+
+h4 {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #848282;
+}
+
+h2 {
+  text-align: center;
+  line-height: 1.2;
+  max-width: 200px;
+  font-size: 28px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+.btn {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 12px 4px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #fff500;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.25s;
+}
+
+.spinner {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border-left-color: #525252;
+  animation: spin 1s ease infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+label {
+  font-weight: 600;
+}
+
+.error_message {
+  font-size: 13px;
+  color: red;
+  font-weight: 500;
+}
