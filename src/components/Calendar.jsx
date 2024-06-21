@@ -29,17 +29,12 @@ export default function Calendar() {
 
   const events = useCalendarStore((state) => state.events);
   const setEvents = useCalendarStore((state) => state.setEvents);
-  const selectedEvent = useCalendarStore((state) => state.selectedEvent);
   const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
 
   const handleEventClick = (event) => {
     setIsOpen();
     setSelectedEvent(event);
   };
-
-  useEffect(() => {
-    console.log(selectedEvent);
-  }, [selectedEvent]);
 
   const handleDayButton = () => {
     const today = new Date();
@@ -198,7 +193,7 @@ export default function Calendar() {
                             >
                               <div className={styles.event_name}>
                                 <img src={eventName} alt="" />
-                                <p>{event.name}</p>
+                                <p>{`${event.firstName} ${event.lastName}`}</p>
                               </div>
                               <div className={styles.visitors}>
                                 <div className={styles.visitors_item}>

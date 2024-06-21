@@ -5,8 +5,15 @@ import adultIcon from "../assets/adult.svg";
 import kidIcon from "../assets/kid.svg";
 import babyIcon from "../assets/baby.svg";
 import teenagerIcon from "../assets/teenager.svg";
+import { useEffect, useState } from "react";
+import useCalendarStore from "../store/calendarStore";
+import axios from "axios";
 
 export default function Modal({ setIsOpen }) {
+  const selectedEvent = useCalendarStore((state) => state.selectedEvent);
+  const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
+  const [event, setEvent] = useState({});
+
   const closeModal = () => {
     setIsOpen(false);
   };
@@ -14,8 +21,42 @@ export default function Modal({ setIsOpen }) {
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
+      setEvent({});
     }
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEvent((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handlePersonChange = (type, action) => {
+    setEvent((prevState) => ({
+      ...prevState,
+      [type]: action === "increase" ? prevState[type] + 1 : prevState[type] - 1,
+    }));
+  };
+
+  async function getEvent(selectedEvent) {
+    try {
+      const response = await axios.get(
+        `http://localhost:5001/api/events/${selectedEvent.id}`
+      );
+      setEvent(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  useEffect(() => {
+    if (selectedEvent) {
+      getEvent(selectedEvent);
+    }
+  }, [selectedEvent]);
 
   return (
     <motion.div
@@ -40,19 +81,19 @@ export default function Modal({ setIsOpen }) {
           <div className={styles.modal_clipboard}>
             <div className={styles.clipboard_item}>
               <p>Name</p>
-              <p>Frau Maria Vanera</p>
+              <p>{event && `${event.firstName} ${event.lastName}`}</p>
             </div>
             <div className={styles.clipboard_item}>
-              <p>Name</p>
-              <p>Frau Maria Vanera</p>
+              <p>Telefon</p>
+              <p>{event && event.phone}</p>
             </div>
             <div className={styles.clipboard_item}>
-              <p>Name</p>
-              <p>Frau Maria Vanera</p>
+              <p>Date</p>
+              <p>{event && new Date(event.date).toLocaleDateString()}</p>
             </div>
             <div className={styles.clipboard_item}>
-              <p>Name</p>
-              <p>Frau Maria Vanera</p>
+              <p>Person</p>
+              <p>{event && `${event.adult} adult ${event.kid} kids`}</p>
             </div>
           </div>
           <h3>Appointment Date</h3>
@@ -69,11 +110,23 @@ export default function Modal({ setIsOpen }) {
               </div>
               <div className={styles.initials_item}>
                 <label htmlFor="title">First Name</label>
-                <input type="text" id="title" />
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  name="firstName"
+                  id="title"
+                  value={event.firstName}
+                />
               </div>
               <div className={styles.initials_item}>
                 <label htmlFor="title">Last Name</label>
-                <input type="text" id="title" />
+                <input
+                  onChange={handleChange}
+                  type="text"
+                  name="lastName"
+                  value={event.lastName}
+                  id="title"
+                />
               </div>
             </div>
             <div className={styles.input_input}>
@@ -82,7 +135,13 @@ export default function Modal({ setIsOpen }) {
             </div>
             <div className={styles.input_input}>
               <label htmlFor="title">Telefon</label>
-              <input type="text" id="title" />
+              <input
+                onChange={handleChange}
+                type="text"
+                name="phone"
+                value={event.phone}
+                id="title"
+              />
             </div>
           </form>
           <div className={styles.person_number}>
@@ -92,9 +151,13 @@ export default function Modal({ setIsOpen }) {
                 Kids
               </div>
               <div className={styles.person_number_buttons}>
-                <button>-</button>
-                <p>1</p>
-                <button>+</button>
+                <button onClick={() => handlePersonChange("kid", "decrease")}>
+                  -
+                </button>
+                <p>{event.kid}</p>
+                <button onClick={() => handlePersonChange("kid", "increase")}>
+                  +
+                </button>
               </div>
             </div>
             <div className={styles.person_number_item}>
@@ -103,9 +166,13 @@ export default function Modal({ setIsOpen }) {
                 Adults
               </div>
               <div className={styles.person_number_buttons}>
-                <button>-</button>
-                <p>1</p>
-                <button>+</button>
+                <button onClick={() => handlePersonChange("adult", "decrease")}>
+                  -
+                </button>
+                <p>{event.adult}</p>
+                <button onClick={() => handlePersonChange("adult", "increase")}>
+                  +
+                </button>
               </div>
             </div>
             <div className={styles.person_number_item}>
@@ -114,9 +181,13 @@ export default function Modal({ setIsOpen }) {
                 Babys
               </div>
               <div className={styles.person_number_buttons}>
-                <button>-</button>
-                <p>1</p>
-                <button>+</button>
+                <button onClick={() => handlePersonChange("baby", "decrease")}>
+                  -
+                </button>
+                <p>{event.baby}</p>
+                <button onClick={() => handlePersonChange("baby", "increase")}>
+                  +
+                </button>
               </div>
             </div>
             <div className={styles.person_number_item}>
