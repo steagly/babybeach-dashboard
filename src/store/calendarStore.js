@@ -14,6 +14,12 @@ const useCalendarStore = create((set) => ({
     set((state) => ({
       events: state.events.filter((event) => event.id !== eventId),
     })),
+  updateEvent: (updateEvent) =>
+    set((state) => ({
+      events: state.events.map((event) =>
+        event.id === updateEvent.id ? { ...event, ...updateEvent } : event
+      ),
+    })),
 }));
 
 export default useCalendarStore;

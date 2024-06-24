@@ -10,6 +10,7 @@ import useCalendarStore from "../store/calendarStore";
 import axios from "axios";
 
 export default function Modal({ setIsOpen }) {
+  const updateEvent = useCalendarStore((state) => state.updateEvent);
   const deleteEvent = useCalendarStore((state) => state.deleteEvent);
   const selectedEvent = useCalendarStore((state) => state.selectedEvent);
   const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
@@ -43,6 +44,7 @@ export default function Modal({ setIsOpen }) {
 
       if (response.status === 200) {
         console.log("Event updated successfully!");
+        updateEvent(event);
         closeModal();
       }
     } catch (error) {
