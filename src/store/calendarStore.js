@@ -10,6 +10,10 @@ const useCalendarStore = create((set) => ({
   setCalendarFormat: (format) => set({ calendarFormat: format }),
   setEvents: (events) => set({ events: events }),
   setSelectedEvent: (event) => set({ selectedEvent: event }),
+  deleteEvent: (eventId) =>
+    set((state) => ({
+      events: state.events.filter((event) => event.id !== eventId),
+    })),
 }));
 
 export default useCalendarStore;
