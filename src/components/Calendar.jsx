@@ -19,13 +19,22 @@ import useModalStore from "../store/modalStore";
 
 export default function Calendar() {
   const setIsOpen = useModalStore((state) => state.setIsOpen);
+
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
   const calendarFormat = useCalendarStore((state) => state.calendarFormat);
   const setCalendarFormat = useCalendarStore(
     (state) => state.setCalendarFormat
   );
-  const [events, setEvents] = useState();
+
+  const events = useCalendarStore((state) => state.events);
+  const setEvents = useCalendarStore((state) => state.setEvents);
+  const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
+
+  const handleEventClick = (event) => {
+    setIsOpen();
+    setSelectedEvent(event);
+  };
 
   const handleDayButton = () => {
     const today = new Date();
@@ -84,7 +93,23 @@ export default function Calendar() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <DatePicker />
+        <div>
+          <DatePicker />
+          <button className={styles.create_appo_btn}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="20px"
+              height="20px"
+            >
+              <path
+                d="M19 19V8H5V19H19M16 1H18V3H19C20.11 3 21 3.9 21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.89 3.89 3 5 3H6V1H8V3H16V1M11 9.5H13V12.5H16V14.5H13V17.5H11V14.5H8V12.5H11V9.5Z"
+                fill="#ffffff"
+              />
+            </svg>
+            Create a new appointment
+          </button>
+        </div>
         <div className={styles.calendar_wrapper}>
           <div className={styles.header}>
             <div className={styles.button_container}>
@@ -176,15 +201,16 @@ export default function Calendar() {
                           .map((event) => (
                             <motion.div
                               className={styles.event_container}
-                              onClick={setIsOpen}
+                              onClick={() => handleEventClick(event)}
                               key={event.id}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
-                              transition={{ duration: 0.2 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.3 }}
                             >
                               <div className={styles.event_name}>
                                 <img src={eventName} alt="" />
-                                <p>{event.name}</p>
+                                <p>{`${event.firstName} ${event.lastName}`}</p>
                               </div>
                               <div className={styles.visitors}>
                                 <div className={styles.visitors_item}>
