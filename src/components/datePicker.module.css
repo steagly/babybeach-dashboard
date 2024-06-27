@@ -7,7 +7,6 @@
 }
 
 .date_wrapper {
-  border: 1px solid #dedede;
   border-radius: 6px;
   padding: 12px;
 }
@@ -33,7 +32,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 100%;
+  border-radius: 4px;
   cursor: pointer;
   color: #525252;
   transition: all 0.3s;
