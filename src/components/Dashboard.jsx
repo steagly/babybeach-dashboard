@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import styles from "./dashboard.module.css";
+import styles from "./Dashboard.module.css";
 import DatePicker from "./DatePicker";
 
 export default function Dashboard() {

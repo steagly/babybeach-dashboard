@@ -1,4 +1,4 @@
-import styles from "./datePicker.module.css";
+import styles from "./DatePicker.module.css";
 import { useState } from "react";
 import useCalendarStore from "../store/calendarStore";
 

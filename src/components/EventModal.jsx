@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import styles from "./modal.module.css";
+import styles from "./EventModal.module.css";
 import appointIcon from "../assets/appoint_editing.svg";
 import adultIcon from "../assets/adult.svg";
 import kidIcon from "../assets/kid.svg";
@@ -8,12 +8,13 @@ import teenagerIcon from "../assets/teenager.svg";
 import { useEffect, useState } from "react";
 import useCalendarStore from "../store/calendarStore";
 import axios from "axios";
+import getEvents from "../api/events";
 
-export default function Modal({ setIsOpen }) {
-  const updateEvent = useCalendarStore((state) => state.updateEvent);
+export default function EditEventModal({ setIsOpen }) {
+  const selectedDate = useCalendarStore((state) => state.selectedDate);
   const deleteEvent = useCalendarStore((state) => state.deleteEvent);
   const selectedEvent = useCalendarStore((state) => state.selectedEvent);
-  const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
+  const setEvents = useCalendarStore((state) => state.setEvents);
   const [event, setEvent] = useState({});
 
   const closeModal = () => {
@@ -36,15 +37,17 @@ export default function Modal({ setIsOpen }) {
   }
 
   async function handleUpdateEvent(event) {
+    const { time, localDate, ...eventToSend } = event;
+
     try {
       const response = await axios.put(
         `http://localhost:5001/api/events/${event.id}`,
-        event
+        eventToSend
       );
 
       if (response.status === 200) {
         console.log("Event updated successfully!");
-        updateEvent(event);
+        getEvents(selectedDate, setEvents);
         closeModal();
       }
     } catch (error) {
@@ -61,10 +64,46 @@ export default function Modal({ setIsOpen }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEvent((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+
+    setEvent((prevState) => {
+      if (name === "localDate") {
+        const inputISODate = new Date(value).toISOString();
+        const localDate = inputISODate.split("T")[0];
+
+        const originalDate = new Date(prevState.date);
+        const hours = originalDate.getUTCHours();
+        const minutes = originalDate.getUTCMinutes();
+
+        const updatedISODate = new Date(inputISODate);
+        updatedISODate.setUTCHours(hours);
+        updatedISODate.setUTCMinutes(minutes);
+
+        return {
+          ...prevState,
+          [name]: localDate,
+          date: updatedISODate.toISOString(),
+        };
+      } else if (name === "time") {
+        const [hours, minutes] = value.split(":").map(Number);
+
+        const inputISODate = new Date(prevState.date);
+        inputISODate.setUTCHours(hours);
+        inputISODate.setUTCMinutes(minutes);
+
+        console.log(inputISODate);
+
+        return {
+          ...prevState,
+          [name]: value,
+          date: inputISODate.toISOString(),
+        };
+      }
+
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
   };
 
   const handlePersonChange = (type, action) => {
@@ -99,8 +138,13 @@ export default function Modal({ setIsOpen }) {
       const response = await axios.get(
         `http://localhost:5001/api/events/${selectedEvent.id}`
       );
-      setEvent(response.data);
-      console.log(response.data);
+
+      const { date } = response.data;
+      const localDate = date.split("T")[0];
+      const time = date.split("T")[1].substring(0, 5);
+
+      setEvent({ ...response.data, localDate, time });
+      // console.log(`${localDate} - ${time}`);
     } catch (error) {
       console.log(error.message);
     }
@@ -217,8 +261,18 @@ export default function Modal({ setIsOpen }) {
           </div>
           <h3>Appointment Date</h3>
           <div className={styles.appoin_datetime}>
-            <input type="date" />
-            <input type="time" />
+            <input
+              type="date"
+              name="localDate"
+              value={event && event.localDate}
+              onChange={handleChange}
+            />
+            <input
+              type="time"
+              name="time"
+              value={event && event.time}
+              onChange={handleChange}
+            />
           </div>
           <h3>Contact Details</h3>
           <form className={styles.contact_details}>

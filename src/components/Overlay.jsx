@@ -1,4 +1,4 @@
-import Modal from "./Modal";
+import EventModal from "./EventModal";
 import { AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useState } from "react";
@@ -11,7 +11,7 @@ export default function Overlay() {
 
   return createPortal(
     <AnimatePresence>
-      {isOpen && <Modal setIsOpen={setIsOpen} />}
+      {isOpen && <EventModal setIsOpen={setIsOpen} />}
     </AnimatePresence>,
     mountElement
   );

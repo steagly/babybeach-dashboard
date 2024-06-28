@@ -11,7 +11,7 @@ import cardsIcon from "../assets/cards.svg";
 import statsIcon from "../assets/stats.svg";
 import settingsIcon from "../assets/settings.svg";
 import exitIcon from "../assets/exit.svg";
-import styles from "./sidebar.module.css";
+import styles from "./Sidebar.module.css";
 
 function Sidebar() {
   const logout = useAuthStore((state) => state.logout);

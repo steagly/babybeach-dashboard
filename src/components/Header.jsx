@@ -1,4 +1,4 @@
-import styles from "./header.module.css";
+import styles from "./Header.module.css";
 import { motion } from "framer-motion";
 
 // eslint-disable-next-line react/prop-types

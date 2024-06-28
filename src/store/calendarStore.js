@@ -10,15 +10,17 @@ const useCalendarStore = create((set) => ({
   setCalendarFormat: (format) => set({ calendarFormat: format }),
   setEvents: (events) => set({ events: events }),
   setSelectedEvent: (event) => set({ selectedEvent: event }),
+
   deleteEvent: (eventId) =>
     set((state) => ({
       events: state.events.filter((event) => event.id !== eventId),
     })),
-  updateEvent: (updateEvent) =>
+
+  updateEvent: (updatedEvent) =>
     set((state) => ({
-      events: state.events.map((event) =>
-        event.id === updateEvent.id ? { ...event, ...updateEvent } : event
-      ),
+      events: state.events
+        .filter((event) => event.id !== updatedEvent.id)
+        .concat(updatedEvent),
     })),
 }));
 
