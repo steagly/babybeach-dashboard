@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import arrowLeft from "../assets/arrow_left.svg";
 import arrowRight from "../assets/arrow_right.svg";
-import styles from "./calendar.module.css";
+import styles from "./Calendar.module.css";
 import Header from "./Header";
 import Overlay from "./Overlay";
 import timeIcon from "../assets/calendar_time.svg";
@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import useCalendarStore from "../store/calendarStore";
 import useModalStore from "../store/modalStore";
+import getEvents from "../api/events";
 
 export default function Calendar() {
   const setIsOpen = useModalStore((state) => state.setIsOpen);
@@ -55,20 +56,9 @@ export default function Calendar() {
     setSelectedDate(newDate);
   };
 
-  async function getEvents(date) {
-    try {
-      const response = await axios.get(
-        `http://localhost:5001/api/events?date=${date.toISOString()}`
-      );
-      setEvents(response.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
   useEffect(() => {
     if (selectedDate) {
-      getEvents(selectedDate);
+      getEvents(selectedDate, setEvents);
     }
   }, [selectedDate]);
 
@@ -81,7 +71,8 @@ export default function Calendar() {
     "Saturday",
     "Sunday",
   ];
-  const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+
+  const hours = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"];
 
   return (
     <>
@@ -197,7 +188,15 @@ export default function Calendar() {
                     >
                       {events &&
                         events
-                          .filter((event) => event.hour === hour)
+                          .filter((event) => {
+                            const date = new Date(event.date);
+                            return (
+                              date
+                                .toISOString()
+                                .split("T")[1]
+                                .substring(0, 2) === hour
+                            );
+                          })
                           .map((event) => (
                             <motion.div
                               className={styles.event_container}

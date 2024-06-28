@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import styles from "./login.module.css";
+import styles from "./Login.module.css";
 import axios from "axios";
 import useAuthStore from "../store/authStore";
 import logo from "../assets/babybeachlogo.svg";

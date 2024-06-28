@@ -23,7 +23,8 @@
   font-family: inherit;
   font-size: inherit;
   border: 1px solid #dedede;
-  padding: 8px;
+  padding: 8px 8px 8px 14px;
+  height: 46px;
   border-radius: 4px;
 }
 
@@ -118,6 +119,11 @@
   margin-bottom: 20px;
   flex-direction: column;
   gap: 10px;
+}
+
+.contact_details label {
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .initials {
