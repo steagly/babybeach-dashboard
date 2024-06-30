@@ -20,6 +20,8 @@ import getEvents from "../api/events";
 
 export default function Calendar() {
   const setIsOpen = useModalStore((state) => state.setIsOpen);
+  const mode = useModalStore((state) => state.mode);
+  const setMode = useModalStore((state) => state.setMode);
 
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
@@ -32,10 +34,20 @@ export default function Calendar() {
   const setEvents = useCalendarStore((state) => state.setEvents);
   const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
 
-  const handleEventClick = (event) => {
+  const handleCreateEvent = () => {
+    setMode("create");
     setIsOpen();
-    setSelectedEvent(event);
   };
+
+  const handleEditEvent = (event) => {
+    setMode("edit");
+    setSelectedEvent(event);
+    setIsOpen();
+  };
+
+  useEffect(() => {
+    console.log(mode);
+  }, [mode]);
 
   const handleDayButton = () => {
     const today = new Date();
@@ -76,7 +88,7 @@ export default function Calendar() {
 
   return (
     <>
-      <Overlay />
+      <Overlay mode={mode} />
       <Header sectionName={"Calendar"} />
       <motion.div
         className={styles.calendar_container}
@@ -86,7 +98,10 @@ export default function Calendar() {
       >
         <div>
           <DatePicker />
-          <button className={styles.create_appo_btn}>
+          <button
+            className={styles.create_appo_btn}
+            onClick={() => handleCreateEvent("create")}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -185,6 +200,7 @@ export default function Calendar() {
                   ) : (
                     <div
                       className={`${styles.calendar_cell} ${styles.cell_row}`}
+                      onDoubleClick={handleCreateEvent}
                     >
                       {events &&
                         events
@@ -200,7 +216,7 @@ export default function Calendar() {
                           .map((event) => (
                             <motion.div
                               className={styles.event_container}
-                              onClick={() => handleEventClick(event)}
+                              onClick={() => handleEditEvent(event)}
                               key={event.id}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}

@@ -22,6 +22,11 @@ const useCalendarStore = create((set) => ({
         .filter((event) => event.id !== updatedEvent.id)
         .concat(updatedEvent),
     })),
+
+  createEvent: (event) =>
+    set((state) => ({
+      events: { ...state.events, event },
+    })),
 }));
 
 export default useCalendarStore;

@@ -166,6 +166,11 @@
   border-right: 1px solid #dedede;
   position: relative;
   height: 95px;
+  transition: all 0.2s;
+}
+
+.calendar_cell:hover {
+  background-color: #f1ebf4;
 }
 
 .cell_row {
