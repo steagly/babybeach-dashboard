@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import styles from "./modal.module.css";
+import styles from "./EventModal.module.css";
 import appointIcon from "../assets/appoint_editing.svg";
 import adultIcon from "../assets/adult.svg";
 import kidIcon from "../assets/kid.svg";
@@ -8,17 +8,27 @@ import teenagerIcon from "../assets/teenager.svg";
 import { useEffect, useState } from "react";
 import useCalendarStore from "../store/calendarStore";
 import axios from "axios";
+import getEvents from "../api/events";
 
-export default function Modal({ setIsOpen }) {
-  const updateEvent = useCalendarStore((state) => state.updateEvent);
+export default function EditEventModal({ setIsOpen, mode }) {
+  const selectedDate = useCalendarStore((state) => state.selectedDate);
   const deleteEvent = useCalendarStore((state) => state.deleteEvent);
   const selectedEvent = useCalendarStore((state) => state.selectedEvent);
-  const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
+  const setEvents = useCalendarStore((state) => state.setEvents);
   const [event, setEvent] = useState({});
 
   const closeModal = () => {
     setIsOpen(false);
   };
+
+  async function handleCreateEvent(event) {
+    try {
+      await axios.post("http://localhost:5001/api/events", event);
+      closeModal();
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   async function handleDeleteEvent(event) {
     try {
@@ -36,15 +46,17 @@ export default function Modal({ setIsOpen }) {
   }
 
   async function handleUpdateEvent(event) {
+    const { time, localDate, ...eventToSend } = event;
+
     try {
       const response = await axios.put(
         `http://localhost:5001/api/events/${event.id}`,
-        event
+        eventToSend
       );
 
       if (response.status === 200) {
         console.log("Event updated successfully!");
-        updateEvent(event);
+        getEvents(selectedDate, setEvents);
         closeModal();
       }
     } catch (error) {
@@ -61,10 +73,46 @@ export default function Modal({ setIsOpen }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEvent((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+
+    setEvent((prevState) => {
+      if (name === "localDate") {
+        const inputISODate = new Date(value).toISOString();
+        const localDate = inputISODate.split("T")[0];
+
+        const originalDate = new Date(prevState.date);
+        const hours = originalDate.getUTCHours();
+        const minutes = originalDate.getUTCMinutes();
+
+        const updatedISODate = new Date(inputISODate);
+        updatedISODate.setUTCHours(hours);
+        updatedISODate.setUTCMinutes(minutes);
+
+        return {
+          ...prevState,
+          [name]: localDate,
+          date: updatedISODate.toISOString(),
+        };
+      } else if (name === "time") {
+        const [hours, minutes] = value.split(":").map(Number);
+
+        const inputISODate = new Date(prevState.date);
+        inputISODate.setUTCHours(hours);
+        inputISODate.setUTCMinutes(minutes);
+
+        console.log(inputISODate);
+
+        return {
+          ...prevState,
+          [name]: value,
+          date: inputISODate.toISOString(),
+        };
+      }
+
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
   };
 
   const handlePersonChange = (type, action) => {
@@ -99,18 +147,44 @@ export default function Modal({ setIsOpen }) {
       const response = await axios.get(
         `http://localhost:5001/api/events/${selectedEvent.id}`
       );
-      setEvent(response.data);
-      console.log(response.data);
+
+      const { date } = response.data;
+      const localDate = date.split("T")[0];
+      const time = date.split("T")[1].substring(0, 5);
+
+      setEvent({ ...response.data, localDate, time });
+      // console.log(`${localDate} - ${time}`);
     } catch (error) {
       console.log(error.message);
     }
   }
 
   useEffect(() => {
-    if (selectedEvent) {
+    if (selectedEvent && mode === "edit") {
       getEvent(selectedEvent);
+    } else if (mode === "create") {
+      setEvent(() => {
+        const event = {
+          date: "2024-06-15T10:00:00.000Z",
+          lastName: "",
+          firstName: "",
+          adult: 0,
+          kid: 0,
+          baby: 0,
+          phone: "",
+          card: null,
+        };
+        const localDate = event.date.split("T")[0];
+        const time = event.date.split("T")[1].substring(0, 5);
+
+        return {
+          ...event,
+          localDate,
+          time,
+        };
+      });
     }
-  }, [selectedEvent]);
+  }, [selectedEvent, mode]);
 
   return (
     <motion.div
@@ -217,8 +291,20 @@ export default function Modal({ setIsOpen }) {
           </div>
           <h3>Appointment Date</h3>
           <div className={styles.appoin_datetime}>
-            <input type="date" />
-            <input type="time" />
+            <input
+              id="date"
+              type="date"
+              name="localDate"
+              value={event && event.localDate}
+              onChange={handleChange}
+            />
+            <input
+              id="time"
+              type="time"
+              name="time"
+              value={event && event.time}
+              onChange={handleChange}
+            />
           </div>
           <h3>Contact Details</h3>
           <form className={styles.contact_details}>
@@ -234,7 +320,7 @@ export default function Modal({ setIsOpen }) {
                   type="text"
                   name="firstName"
                   placeholder="Type a first name"
-                  id="title"
+                  id="firstName"
                   value={event.firstName}
                 />
               </div>
@@ -246,7 +332,7 @@ export default function Modal({ setIsOpen }) {
                   name="lastName"
                   placeholder="Type a last name"
                   value={event.lastName}
-                  id="title"
+                  id="lastName"
                 />
               </div>
             </div>
@@ -255,7 +341,7 @@ export default function Modal({ setIsOpen }) {
               <input
                 type="text"
                 placeholder="Type a email adress name"
-                id="title"
+                id="email"
               />
             </div>
             <div className={styles.input_input}>
@@ -266,7 +352,7 @@ export default function Modal({ setIsOpen }) {
                 name="phone"
                 placeholder="Type a phone"
                 value={event.phone}
-                id="title"
+                id="phone"
               />
             </div>
           </form>
@@ -347,40 +433,64 @@ export default function Modal({ setIsOpen }) {
                 </svg>
                 Close
               </button>
-              <button
-                className={styles.delete_btn}
-                onClick={() => handleDeleteEvent(event)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
+              {mode === "edit" ? (
+                <button
+                  className={styles.delete_btn}
+                  onClick={() => handleDeleteEvent(event)}
                 >
-                  <path
-                    d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                    fill="#FFFFFF"
-                  />
-                </svg>
-                Delete
-              </button>
-              <button
-                className={styles.save_btn}
-                onClick={() => handleUpdateEvent(event)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+                      fill="#FFFFFF"
+                    />
+                  </svg>
+                  Delete
+                </button>
+              ) : (
+                ""
+              )}
+              {mode === "edit" ? (
+                <button
+                  className={styles.save_btn}
+                  onClick={() => handleUpdateEvent(event)}
                 >
-                  <path
-                    d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
-                    fill="#FFFFFF"
-                  />
-                </svg>
-                Save
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
+                      fill="#FFFFFF"
+                    />
+                  </svg>
+                  Save
+                </button>
+              ) : (
+                <button
+                  className={styles.save_btn}
+                  onClick={() => handleCreateEvent(event)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
+                      fill="#FFFFFF"
+                    />
+                  </svg>
+                  Add
+                </button>
+              )}
             </div>
           </div>
         </div>

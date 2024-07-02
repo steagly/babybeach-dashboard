@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import arrowLeft from "../assets/arrow_left.svg";
 import arrowRight from "../assets/arrow_right.svg";
-import styles from "./calendar.module.css";
+import styles from "./Calendar.module.css";
 import Header from "./Header";
 import Overlay from "./Overlay";
 import timeIcon from "../assets/calendar_time.svg";
@@ -16,9 +16,12 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import useCalendarStore from "../store/calendarStore";
 import useModalStore from "../store/modalStore";
+import getEvents from "../api/events";
 
 export default function Calendar() {
   const setIsOpen = useModalStore((state) => state.setIsOpen);
+  const mode = useModalStore((state) => state.mode);
+  const setMode = useModalStore((state) => state.setMode);
 
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
@@ -31,10 +34,20 @@ export default function Calendar() {
   const setEvents = useCalendarStore((state) => state.setEvents);
   const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
 
-  const handleEventClick = (event) => {
+  const handleCreateEvent = () => {
+    setMode("create");
     setIsOpen();
-    setSelectedEvent(event);
   };
+
+  const handleEditEvent = (event) => {
+    setMode("edit");
+    setSelectedEvent(event);
+    setIsOpen();
+  };
+
+  useEffect(() => {
+    console.log(mode);
+  }, [mode]);
 
   const handleDayButton = () => {
     const today = new Date();
@@ -55,20 +68,9 @@ export default function Calendar() {
     setSelectedDate(newDate);
   };
 
-  async function getEvents(date) {
-    try {
-      const response = await axios.get(
-        `http://localhost:5001/api/events?date=${date.toISOString()}`
-      );
-      setEvents(response.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
   useEffect(() => {
     if (selectedDate) {
-      getEvents(selectedDate);
+      getEvents(selectedDate, setEvents);
     }
   }, [selectedDate]);
 
@@ -81,11 +83,12 @@ export default function Calendar() {
     "Saturday",
     "Sunday",
   ];
-  const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+
+  const hours = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"];
 
   return (
     <>
-      <Overlay />
+      <Overlay mode={mode} />
       <Header sectionName={"Calendar"} />
       <motion.div
         className={styles.calendar_container}
@@ -95,7 +98,10 @@ export default function Calendar() {
       >
         <div>
           <DatePicker />
-          <button className={styles.create_appo_btn}>
+          <button
+            className={styles.create_appo_btn}
+            onClick={() => handleCreateEvent("create")}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -194,14 +200,23 @@ export default function Calendar() {
                   ) : (
                     <div
                       className={`${styles.calendar_cell} ${styles.cell_row}`}
+                      onDoubleClick={handleCreateEvent}
                     >
                       {events &&
                         events
-                          .filter((event) => event.hour === hour)
+                          .filter((event) => {
+                            const date = new Date(event.date);
+                            return (
+                              date
+                                .toISOString()
+                                .split("T")[1]
+                                .substring(0, 2) === hour
+                            );
+                          })
                           .map((event) => (
                             <motion.div
                               className={styles.event_container}
-                              onClick={() => handleEventClick(event)}
+                              onClick={() => handleEditEvent(event)}
                               key={event.id}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
