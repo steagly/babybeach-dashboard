@@ -1,0 +1,89 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #838383;
+  border-bottom: 1px solid #dedede;
+  height: 126px;
+  text-transform: uppercase;
+}
+
+.wrapper button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border: 2px solid #ffeb01;
+  border-radius: 6px;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 12px 22px 12px 22px;
+  transition: all 0.3s;
+}
+
+.wrapper button:hover {
+  background-color: #ffeb01;
+  transform: scale(1.1);
+}
+
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 1320px;
+  width: 100%;
+}
+
+.wrapper ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+.wrapper ul li {
+  cursor: pointer;
+}
+.wrapper ul li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.header_menu {
+  display: flex;
+  gap: 40px;
+}
+
+.contacts_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 44px;
+}
+
+.header_contacts {
+  display: flex;
+  gap: 10px;
+}
+
+.phone a {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.insta a {
+  display: flex;
+  align-items: center;
+}
+
+.body_wrapper {
+  max-width: 1320px;
+  margin: 0 auto;
+  margin-top: 20px;
+}
