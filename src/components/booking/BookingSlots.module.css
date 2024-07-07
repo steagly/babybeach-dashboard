@@ -1,0 +1,9 @@
+.timeslots_container {
+  max-width: 514px;
+}
+
+.timeslots {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, 158px);
+}

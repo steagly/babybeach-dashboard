@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Appointment from "./components/landing/AppointmentHeader";
+import Appointment from "./components/booking/BookingMain";
 import Login from "./components/Login";
 import Calendar from "./components/Calendar";
 import Cards from "./components/Cards";
