@@ -48,8 +48,18 @@ export default function TimeSlots() {
     setSelectedTimeSlot(event.target.value);
   };
 
+  const selectedDate = new Date();
+
   return (
     <div className={styles.timeslots_container}>
+      <p className={styles.selected_date}>
+        {selectedDate.toLocaleString("de-DE", {
+          weekday: "long",
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+        })}
+      </p>
       <div className={styles.timeslots}>
         {timeSlots.map((timeSlot) => {
           const formatedStartTime = formatTime(timeSlot.start);

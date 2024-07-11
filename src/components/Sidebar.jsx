@@ -12,14 +12,17 @@ import statsIcon from "../assets/stats.svg";
 import settingsIcon from "../assets/settings.svg";
 import exitIcon from "../assets/exit.svg";
 import styles from "./Sidebar.module.css";
+import useSideBarStore from "../store/sidebarStore";
 
 function Sidebar() {
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { toggleSidebar, sidebarIsOpen } = useSideBarStore();
+
   const isActive = (path) =>
-    location.pathname === path ? styles.link_active : "";
+    (location.pathname === path) & sidebarIsOpen ? styles.link_active : "";
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -40,9 +43,26 @@ function Sidebar() {
   };
 
   return (
-    <aside className={styles.sidebar}>
+    <aside
+      className={
+        sidebarIsOpen ? styles.sidebar : `${styles.sidebar} ${styles.closed}`
+      }
+    >
       <div className={styles.top}>
         <img src={logo} alt="logo" />
+        <button className={styles.close_btn} onClick={toggleSidebar}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="18px"
+            height="18px"
+          >
+            <path
+              d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+              fill="#525252"
+            />
+          </svg>
+        </button>
       </div>
       <div className={styles.center}>
         <ul>
@@ -79,7 +99,7 @@ function Sidebar() {
               Statistics
             </Link>
           </li>
-          <p>account</p>
+          <p>{sidebarIsOpen ? "account" : ""}</p>
           <li>
             <Link className={styles.link} to="/dashboard">
               <img src={settingsIcon} alt="dashboard-icon" />
@@ -89,7 +109,7 @@ function Sidebar() {
           <li onClick={handleLogout}>
             <a className={styles.link}>
               <img src={exitIcon} alt="dashboard-icon" />
-              Logout
+              logout
             </a>
           </li>
         </ul>

@@ -34,6 +34,11 @@ export default function Calendar() {
   const setEvents = useCalendarStore((state) => state.setEvents);
   const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
 
+  const handleDateButton = (currentDate) => {
+    setSelectedDate(currentDate);
+    setCalendarFormat("day");
+  };
+
   const handleCreateEvent = () => {
     setMode("create");
     setIsOpen();
@@ -97,7 +102,7 @@ export default function Calendar() {
         transition={{ duration: 0.6 }}
       >
         <div>
-          <DatePicker />
+          <DatePicker changeDay={handleDateButton} />
           <button
             className={styles.create_appo_btn}
             onClick={() => handleCreateEvent("create")}

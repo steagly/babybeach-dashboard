@@ -2,21 +2,41 @@
   position: fixed;
   min-height: 100vh;
   background-color: #b17ed0;
-  min-width: 232px;
+  width: 232px;
   text-transform: uppercase;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
 }
 
 .top {
   display: flex;
+  position: relative;
   align-items: center;
+  justify-content: space-between;
   height: 82px;
   border-bottom: 0.5px solid #a273bf;
+}
+
+.close_btn {
+  display: flex;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
 }
 
 .center {
   padding-top: 20px;
   padding-left: 8px;
   padding-right: 18px;
+  transition: all 0.3s ease;
 }
 
 .center ul {
@@ -35,7 +55,7 @@
   gap: 15px;
   height: 100%;
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.6s;
@@ -65,6 +85,23 @@
 
 .center ul li a:hover {
   background-color: #a273bf;
+}
+
+.sidebar.closed {
+  width: 50px;
+  transition: width 0.3s ease;
+}
+
+.sidebar.closed .center {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0px 0px 0px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.closed .close_btn {
+  right: 50%;
+  transform: translate(50%, 0);
 }
 
 @keyframes fadeIn {
