@@ -2,7 +2,7 @@ import styles from "./DatePicker.module.css";
 import { useState } from "react";
 import useCalendarStore from "../store/calendarStore";
 
-export default function DatePicker() {
+export default function DatePicker({ changeDay }) {
   const today = new Date();
 
   const selectedDate = useCalendarStore((state) => state.selectedDate);
@@ -14,12 +14,31 @@ export default function DatePicker() {
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
-  const daysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
+  const changeMonth = (key) => {
+    switch (key) {
+      case "prevMonth":
+        setCurrentMonth((prevMonth) => {
+          if (prevMonth === 0) {
+            setCurrentYear((prevYear) => prevYear - 1);
+            return 11;
+          }
+          return prevMonth - 1;
+        });
+        break;
 
-  const handleDateButton = (currentDate) => {
-    setSelectedDate(currentDate);
-    setCalendarFormat("day");
+      case "nextMonth":
+        setCurrentMonth((prevMonth) => {
+          if (prevMonth === 11) {
+            setCurrentYear((prevYear) => prevYear + 1);
+            return 0;
+          }
+          return prevMonth + 1;
+        });
+        break;
+    }
   };
+
+  const daysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
 
   const renderCalendar = (month, year) => {
     const date = new Date(year, month, 1);
@@ -57,7 +76,7 @@ export default function DatePicker() {
         <div
           key={day}
           className={`${styles.date_day} ${isSelected ? styles.selected : ""} ${isMonday ? styles.inactive : ""}`}
-          onClick={() => !isMonday && handleDateButton(currentDate)}
+          onClick={() => !isMonday && changeDay(currentDate)}
         >
           {day}
         </div>
@@ -70,7 +89,9 @@ export default function DatePicker() {
     <div className={styles.date_container}>
       <div className={styles.date_wrapper}>
         <div className={styles.date_header}>
+          <button onClick={() => changeMonth("prevMonth")}>left</button>
           <div>{`${new Date(currentYear, currentMonth).toLocaleString("de-DE", { month: "long", year: "numeric" })}`}</div>
+          <button onClick={() => changeMonth("nextMonth")}>right</button>
         </div>
         <div className={styles.date_grid}>
           {renderCalendar(currentMonth, currentYear)}

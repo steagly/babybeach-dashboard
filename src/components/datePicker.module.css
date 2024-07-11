@@ -14,9 +14,17 @@
 
 .date_header {
   display: flex;
-  justify-content: center;
+  max-width: 275px;
+  justify-content: space-between;
+  gap: 20px;
   padding-bottom: 14px;
   font-weight: 600;
+}
+
+.date_header button {
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
 .date_grid {
@@ -35,6 +43,7 @@
   height: 32px;
   border-radius: 100%;
   cursor: pointer;
+  color: #525252;
   transition: all 0.3s;
 }
 
@@ -42,14 +51,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  font-weight: 400;
+  font-size: 14px;
+  color: #b9b7b7;
   padding: 4px;
 }
 
 .selected {
   color: white;
   background-color: #b17ed0;
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
 }
 
 .inactive {
