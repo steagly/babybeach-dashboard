@@ -1,0 +1,59 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    scale: 0;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.timeslot {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+  border: 1px solid #dedede;
+  color: #525252;
+  border-radius: 4px;
+  padding: 15px 15px 15px 15px;
+  min-height: 58px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 255, 0.02);
+}
+
+.timeslot input[type="radio"] {
+  display: none;
+}
+
+.radio_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #dedede;
+  border-radius: 100%;
+}
+
+.radio_icon img {
+  width: 14px;
+  height: 14px;
+  display: none;
+}
+
+.timeslot input[type="radio"]:checked + .radio_icon img {
+  display: block;
+  animation: fadeIn 0.5s;
+}
+
+.active {
+  background-color: #b17ed0;
+  color: #ffffff;
+}
+
+.timeslot:hover {
+  border: 1px solid #b17ed0;
+}

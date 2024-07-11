@@ -14,9 +14,17 @@
 
 .date_header {
   display: flex;
-  justify-content: center;
+  max-width: 275px;
+  justify-content: space-between;
+  gap: 20px;
   padding-bottom: 14px;
   font-weight: 600;
+}
+
+.date_header button {
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
 .date_grid {

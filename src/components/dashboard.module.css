@@ -5,4 +5,10 @@
 .home_container {
   margin-left: 232px;
   flex: 1;
+  padding-left: 18px;
+  transition: margin-left 0.2s ease-out;
+}
+
+.container_max {
+  margin-left: 50px;
 }
