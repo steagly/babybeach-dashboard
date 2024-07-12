@@ -8,6 +8,15 @@
   overflow-x: hidden;
 }
 
+.logo {
+  opacity: 1;
+  transition: all 0.4s;
+}
+
+.logo.hidden {
+  opacity: 0;
+}
+
 .top {
   display: flex;
   position: relative;
@@ -67,6 +76,10 @@
 }
 
 .link_active {
+  background-color: #a273bf;
+}
+
+.link_active_notext {
   background-color: #a273bf;
 }
 
