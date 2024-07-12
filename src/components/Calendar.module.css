@@ -15,7 +15,6 @@
 .calendar_container {
   display: flex;
   gap: 18px;
-  padding-left: 18px;
 }
 
 .calendar_wrapper {
