@@ -3,6 +3,8 @@ import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import useTooltip from "../hooks/useTooltip";
+import Tooltip from "./Tooltip";
 
 import logo from "../assets/logo_light.svg";
 import calendardIcon from "../assets/calendar.svg";
@@ -17,6 +19,7 @@ import useSideBarStore from "../store/sidebarStore";
 function Sidebar() {
   const logout = useAuthStore((state) => state.logout);
   const { toggleSidebar, sidebarIsOpen } = useSideBarStore();
+  const { tooltip, showTooltip, hideTooltip } = useTooltip();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,6 +56,11 @@ function Sidebar() {
         sidebarIsOpen ? styles.sidebar : `${styles.sidebar} ${styles.closed}`
       }
     >
+      {tooltip.visible && (
+        <Tooltip position={tooltip.position} visible={tooltip.visible}>
+          {tooltip.label}
+        </Tooltip>
+      )}
       <div className={styles.top}>
         <img
           className={
@@ -80,6 +88,8 @@ function Sidebar() {
           <li>
             <Link
               className={`${styles.link} ${isActive("/dashboard")}`}
+              onMouseEnter={(e) => showTooltip(e, "Dashboard")}
+              onMouseLeave={hideTooltip}
               to="/dashboard"
             >
               <img src={dashboardIcon} alt="dashboard-icon" />
@@ -89,6 +99,8 @@ function Sidebar() {
           <li>
             <Link
               className={`${styles.link} ${isActive("/dashboard/calendar")}`}
+              onMouseEnter={(e) => showTooltip(e, "Calendar")}
+              onMouseLeave={hideTooltip}
               to="/dashboard/calendar"
             >
               <img src={calendardIcon} alt="dashboard-icon" />
@@ -98,6 +110,8 @@ function Sidebar() {
           <li>
             <Link
               className={`${styles.link} ${isActive("/dashboard/cards")}`}
+              onMouseEnter={(e) => showTooltip(e, "Cards")}
+              onMouseLeave={hideTooltip}
               to="/dashboard/cards"
             >
               <img src={cardsIcon} alt="dashboard-icon" />
@@ -105,19 +119,33 @@ function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className={styles.link} to="/dashboard">
+            <Link
+              className={styles.link}
+              onMouseEnter={(e) => showTooltip(e, "Statistics")}
+              onMouseLeave={hideTooltip}
+              to="/dashboard"
+            >
               <img src={statsIcon} alt="dashboard-icon" />
               Statistics
             </Link>
           </li>
           {sidebarIsOpen ? <p>account</p> : ""}
           <li>
-            <Link className={styles.link} to="/dashboard">
+            <Link
+              className={styles.link}
+              onMouseEnter={(e) => showTooltip(e, "Settings")}
+              onMouseLeave={hideTooltip}
+              to="/dashboard"
+            >
               <img src={settingsIcon} alt="dashboard-icon" />
               Settings
             </Link>
           </li>
-          <li onClick={handleLogout}>
+          <li
+            onClick={handleLogout}
+            onMouseEnter={(e) => showTooltip(e, "Logout")}
+            onMouseLeave={hideTooltip}
+          >
             <a className={styles.link}>
               <img src={exitIcon} alt="dashboard-icon" />
               logout
