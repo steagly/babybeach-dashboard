@@ -8,6 +8,15 @@
   overflow-x: hidden;
 }
 
+.logo {
+  opacity: 1;
+  transition: all 0.4s;
+}
+
+.logo.hidden {
+  opacity: 0;
+}
+
 .top {
   display: flex;
   position: relative;
@@ -28,8 +37,8 @@
   right: 5px;
   background-color: #ffffff;
   border-radius: 4px;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
 }
 
 .center {
@@ -40,6 +49,9 @@
 }
 
 .center ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   font-size: 14px;
   font-weight: 500;
   color: #ffffff;
@@ -55,7 +67,7 @@
   gap: 15px;
   height: 100%;
   width: 100%;
-  padding: 12px;
+  padding: 10px 12px 10px 12px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.6s;
@@ -64,6 +76,10 @@
 }
 
 .link_active {
+  background-color: #a273bf;
+}
+
+.link_active_notext {
   background-color: #a273bf;
 }
 
