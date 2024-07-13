@@ -29,13 +29,13 @@
 
 .date_grid {
   max-width: 297px;
-  gap: 6px;
+  gap: 8px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
 
 .date_day {
-  font-weight: 400;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
