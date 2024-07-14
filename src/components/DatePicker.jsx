@@ -1,15 +1,8 @@
 import styles from "./DatePicker.module.css";
 import { useState } from "react";
-import useCalendarStore from "../store/calendarStore";
 
-export default function DatePicker({ changeDay }) {
+export default function DatePicker({ changeDay, selectedDate }) {
   const today = new Date();
-
-  const selectedDate = useCalendarStore((state) => state.selectedDate);
-  const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
-  const setCalendarFormat = useCalendarStore(
-    (state) => state.setCalendarFormat
-  );
 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
