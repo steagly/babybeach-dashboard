@@ -1,16 +1,16 @@
 .timeslots_container {
-  max-width: 514px;
+  width: 514px;
 }
 
 .timeslots {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(3, 158px);
+  grid-template-columns: repeat(auto-fill, minmax(158px, 3fr));
 }
 
 .selected_date {
   font-size: 18px;
-  color: #838383;
+  color: #525252;
   font-weight: 600;
   margin-bottom: 10px;
 }

@@ -50,10 +50,6 @@ export default function Calendar() {
     setIsOpen();
   };
 
-  useEffect(() => {
-    console.log(mode);
-  }, [mode]);
-
   const handleDayButton = () => {
     const today = new Date();
     if (!today.getDay === 1) {
@@ -102,7 +98,10 @@ export default function Calendar() {
         transition={{ duration: 0.6 }}
       >
         <div>
-          <DatePicker changeDay={handleDateButton} />
+          <DatePicker
+            changeDay={handleDateButton}
+            selectedDate={selectedDate}
+          />
           <button
             className={styles.create_appo_btn}
             onClick={() => handleCreateEvent("create")}

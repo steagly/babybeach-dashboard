@@ -91,3 +91,8 @@
   display: flex;
   gap: 32px;
 }
+
+.person_cards {
+  display: flex;
+  gap: 20px;
+}
