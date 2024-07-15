@@ -1,0 +1,10 @@
+.not_found {
+  display: flex;
+  gap: 10px;
+  color: #525252;
+  max-width: 400px;
+}
+
+.not_found h3 {
+  margin: 0;
+}
