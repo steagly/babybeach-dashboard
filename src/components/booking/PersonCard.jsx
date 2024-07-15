@@ -14,7 +14,7 @@ function PersonCard({ icon }) {
           <button>
             <img src={arrowBtn} alt="" />
           </button>
-          <p className={styles.number}>2</p>
+          <p className={styles.number}>0</p>
           <button>
             <img src={arrowBtn} alt="" />
           </button>

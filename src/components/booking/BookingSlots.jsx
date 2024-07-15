@@ -1,6 +1,7 @@
 import useBookingStore from "../../store/bookingStore";
 import styles from "../booking/BookingSlots.module.css";
 import TimeSlot from "./TimeSlot";
+import TimeSlotsNotFound from "./TimeSlotsNotFound";
 import { motion, AnimatePresence } from "framer-motion";
 
 const formatTime = (date) => {
@@ -20,13 +21,7 @@ export default function TimeSlots({ timeSlots }) {
   };
 
   return (
-    <motion.div
-      key={selectedDate}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className={styles.timeslots_container}
-    >
+    <div className={styles.timeslots_container}>
       <p className={styles.selected_date}>
         {selectedDate.toLocaleString("de-DE", {
           weekday: "long",
@@ -35,7 +30,13 @@ export default function TimeSlots({ timeSlots }) {
           year: "2-digit",
         })}
       </p>
-      <div className={styles.timeslots}>
+      <motion.div
+        key={selectedDate}
+        initial={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ duration: 0.4 }}
+        className={timeSlots && timeSlots.length > 0 ? styles.timeslots : ""}
+      >
         {timeSlots && timeSlots.length > 0 ? (
           timeSlots.map((timeSlot) => {
             const formatedStartTime = formatTime(timeSlot.start);
@@ -51,9 +52,9 @@ export default function TimeSlots({ timeSlots }) {
             );
           })
         ) : (
-          <p>timeslots not found</p>
+          <TimeSlotsNotFound />
         )}
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

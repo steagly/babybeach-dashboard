@@ -48,6 +48,7 @@
 
 .card_item:hover .number {
   color: #ffffff;
+  transition: all 0.4s;
 }
 
 .number {
