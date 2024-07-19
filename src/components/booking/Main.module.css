@@ -89,10 +89,16 @@
 
 .booking_main {
   display: flex;
-  gap: 32px;
+  gap: 22px;
 }
 
 .person_cards {
   display: flex;
   gap: 20px;
+}
+
+.booking_summary {
+  background-color: #fff;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+  border-radius: 4px;
 }
