@@ -4,7 +4,6 @@ import styles from "./TimeSlotsNotFound.module.css";
 export default function TimeSlotsNotFound() {
   return (
     <div className={styles.not_found}>
-      <img src={boyIcon} alt="" />
       <div className={styles.info}>
         <h3>Slots doesn't found</h3>
         <p>

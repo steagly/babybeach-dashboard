@@ -1,0 +1,53 @@
+.booking_summary {
+  display: flex;
+  position: sticky;
+  top: 20px;
+  z-index: 10;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.booking_summary h3 {
+  margin: 0;
+}
+
+.booking_date {
+  display: flex;
+  padding: 10px;
+  width: 150px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+  border-radius: 6px;
+}
+
+.booking_duration {
+  padding: 10px;
+  width: 150px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+  border-radius: 6px;
+}
+
+.date_container {
+  display: flex;
+  gap: 20px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.service_item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.services {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #dedede;
+}

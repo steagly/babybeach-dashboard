@@ -17,11 +17,10 @@
   border: 1px solid #dedede;
   color: #525252;
   border-radius: 4px;
-  padding: 15px 15px 15px 15px;
-  min-height: 58px;
+  padding: 15px;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 255, 0.02);
+  box-shadow: 0px 0px 10px rgba(0, 0, 255, 0.02);
 }
 
 .timeslot input[type="radio"] {

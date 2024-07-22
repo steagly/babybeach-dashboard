@@ -1,5 +1,5 @@
 import styles from "./PersonCard.module.css";
-import arrowBtn from "../../assets/landing/person_change_btn.svg";
+import { ArrowBtnIcon } from "../icons";
 
 function PersonCard({ icon, changePersonCount, children, type, bookingInfo }) {
   return (
@@ -11,12 +11,12 @@ function PersonCard({ icon, changePersonCount, children, type, bookingInfo }) {
           <p>kostenfrei</p>
         </div>
         <div className={styles.item_btns}>
-          <button onClick={() => changePersonCount(type, "increase")}>
-            <img src={arrowBtn} alt="" />
+          <button onClick={() => changePersonCount(type, "decrease")}>
+            <ArrowBtnIcon className={styles.icon} />
           </button>
           <p className={styles.number}>{bookingInfo[type]}</p>
-          <button onClick={() => changePersonCount(type, "decrease")}>
-            <img src={arrowBtn} alt="" />
+          <button onClick={() => changePersonCount(type, "increase")}>
+            <ArrowBtnIcon className={`${styles.icon} ${styles.rotate}`} />
           </button>
         </div>
       </div>
