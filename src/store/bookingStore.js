@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const useBookingStore = create((set) => ({
   selectedDate: new Date(),
-  selectedTimeSlot: "",
+  selectedTimeSlot: {},
   timeSlots: [],
   bookingInfo: {
     date: "",

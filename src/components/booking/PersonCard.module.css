@@ -52,11 +52,26 @@
   transition: all 0.3s;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
   color: #ffffff !important;
+  transform: scale(1.08);
 }
 
 .card_item:hover .number {
   color: #ffffff;
   transition: all 0.4s;
+}
+
+.person_card:hover .item_btns .icon {
+  color: #fff500;
+  transition: all 0.3s;
+}
+
+.icon {
+  transition: all 0.3s;
+  color: #b17ed0;
+}
+
+.icon.rotate {
+  transform: rotate(180deg);
 }
 
 .number {

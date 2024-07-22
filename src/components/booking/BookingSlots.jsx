@@ -16,8 +16,8 @@ export default function TimeSlots({ timeSlots }) {
   const { selectedDate, selectedTimeSlot, setSelectedTimeSlot } =
     useBookingStore();
 
-  const handleTimeSlotChange = (event) => {
-    setSelectedTimeSlot(event.target.value);
+  const handleTimeSlotChange = (timeSlot) => {
+    setSelectedTimeSlot(timeSlot);
   };
 
   return (
@@ -44,6 +44,7 @@ export default function TimeSlots({ timeSlots }) {
             return (
               <TimeSlot
                 key={timeSlot.id}
+                timeSlot={timeSlot}
                 startTime={formatedStartTime}
                 endTime={formatedEndTime}
                 selectedTimeSlot={selectedTimeSlot}

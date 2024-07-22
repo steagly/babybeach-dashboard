@@ -81,14 +81,7 @@
   align-items: center;
 }
 
-.body_wrapper {
-  max-width: 1320px;
-  margin: 0 auto;
-  margin-top: 20px;
-}
-
 .booking_main {
-  display: flex;
   gap: 22px;
 }
 
@@ -97,8 +90,18 @@
   gap: 20px;
 }
 
-.booking_summary {
-  background-color: #fff;
-  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
-  border-radius: 4px;
+.booking_date {
+  display: flex;
+  border-radius: 6px;
+  gap: 20px;
+}
+
+.main_content {
+  display: flex;
+  margin: 0 auto;
+  gap: 20px;
+  max-width: 1320px;
+  margin-top: 20px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
