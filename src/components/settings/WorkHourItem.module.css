@@ -1,0 +1,11 @@
+.closed_body {
+  display: flex;
+  width: 100%;
+  min-width: 310px;
+  align-items: center;
+  padding-left: 10px;
+  background-color: #ebe9ed;
+  gap: 10px;
+  height: 48px;
+  border-radius: 6px;
+}

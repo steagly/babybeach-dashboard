@@ -1,12 +1,11 @@
 .person_card {
   display: flex;
   flex: 1;
-  max-width: 178px;
 }
 
 .card_item {
   flex: 1;
-  min-width: 0;
+  min-width: 140px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +51,7 @@
   transition: all 0.3s;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
   color: #ffffff !important;
-  transform: scale(1.08);
+  transform: scale(1.02);
 }
 
 .card_item:hover .number {
@@ -80,4 +79,9 @@
   text-shadow: 0px 2px 0px rgba(0, 0, 0, 0.22);
   line-height: 48px;
   font-variant-numeric: tabular-nums;
+}
+
+.error {
+  border: 1px solid #ea6662;
+  border-radius: 6px;
 }

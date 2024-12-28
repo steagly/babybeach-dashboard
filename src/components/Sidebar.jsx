@@ -61,6 +61,7 @@ function Sidebar() {
           {tooltip.label}
         </Tooltip>
       )}
+
       <div className={styles.top}>
         <img
           className={
@@ -132,10 +133,10 @@ function Sidebar() {
           {sidebarIsOpen ? <p>account</p> : ""}
           <li>
             <Link
-              className={styles.link}
+              className={`${styles.link} ${isActive("/dashboard/settings")}`}
               onMouseEnter={(e) => showTooltip(e, "Settings")}
               onMouseLeave={hideTooltip}
-              to="/dashboard"
+              to="/dashboard/settings"
             >
               <img src={settingsIcon} alt="dashboard-icon" />
               Settings

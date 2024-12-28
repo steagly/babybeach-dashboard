@@ -1,10 +1,16 @@
 .not_found {
   display: flex;
-  flex-direction: column;
   color: #525252;
-  text-align: center;
+  text-align: start;
+  gap: 14px;
+  margin-top: 26px;
   align-items: center;
 }
+
+.info {
+  max-width: 340px;
+}
+
 .not_found img {
   width: 140px;
   height: 140px;
@@ -12,7 +18,11 @@
 
 .not_found h3 {
   margin: 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.not_found p {
+  color: #838383;
 }
