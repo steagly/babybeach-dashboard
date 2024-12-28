@@ -22,9 +22,12 @@
 }
 
 .date_header button {
-  border: none;
+  display: flex;
   background: none;
   cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dedede;
 }
 
 .date_grid {
@@ -35,13 +38,14 @@
 }
 
 .date_day {
-  font-weight: 400;
+  font-weight: 500;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 100%;
+  border-radius: 50%;
   cursor: pointer;
   color: #525252;
   transition: all 0.3s;
@@ -51,9 +55,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 16px;
-  color: #525252;
+  font-weight: 400;
+  font-size: 14px;
+  color: #818181;
   padding: 4px;
 }
 
@@ -64,6 +68,7 @@
 }
 
 .inactive {
+  font-weight: 400;
   cursor: default;
   color: #b9b7b7;
 }
@@ -71,4 +76,21 @@
 .date_day:not(.inactive):hover {
   color: white;
   background-color: #b17ed0;
+}
+
+.left_arrow,
+.right_arrow {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+}
+
+.left_arrow {
+  transform: rotate(180deg);
+}
+
+.left_arrow:hover,
+.right_arrow:hover {
+  background-color: #dedede;
+  transition: all 0.3s;
 }

@@ -1,0 +1,123 @@
+.booking_summary {
+  display: flex;
+  position: sticky;
+  top: 20px;
+  z-index: 10;
+  height: 100%;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+}
+
+.booking_summary h3 {
+  font-size: 20px;
+  margin: 0;
+  padding: 10px 0px 10px 20px;
+  border-bottom: 1px solid #dedede;
+  margin-bottom: 10px;
+  color: #525252;
+}
+
+.booking_body {
+  padding: 20px;
+}
+
+.booking_item {
+  display: flex;
+  padding: 10px;
+  gap: 6px;
+  width: 150px;
+  text-align: left;
+  background-color: white;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+  border-radius: 6px;
+  border: 1px solid #dedede;
+}
+
+.booking_duration {
+  padding: 10px;
+  width: 150px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+  border-radius: 6px;
+}
+
+.date_container {
+  display: flex;
+  gap: 20px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #838383;
+}
+
+.service_item {
+  width: 100%;
+  display: flex;
+  min-width: 200px;
+  justify-content: start;
+  padding: 12px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  justify-content: space-between;
+}
+
+.service_title {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #525252;
+  font-weight: 400;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #dedede;
+}
+
+.summary {
+  display: flex;
+  font-size: 16px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  font-weight: 700;
+  color: #525252;
+  justify-content: space-between;
+}
+
+.prev_btn {
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  background: none;
+  height: 44px;
+  transition: all 0.3s;
+  margin-bottom: 10px;
+}
+
+.prev_btn:hover {
+  background: #ebebeb;
+}
+
+.submit_btn {
+  width: 100%;
+  cursor: pointer;
+  border: none;
+  color: #ffffff;
+  border-radius: 4px;
+  height: 44px;
+  background-color: #b17ed0;
+  transition: all 0.3s;
+}
+
+.submit_btn:hover {
+  background-color: #9d70b9;
+}

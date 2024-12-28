@@ -1,37 +1,8 @@
+import useBookingStore from "../../store/bookingStore";
 import styles from "../booking/BookingSlots.module.css";
 import TimeSlot from "./TimeSlot";
-import { useState } from "react";
-
-const timeSlots = [
-  {
-    id: 10,
-    cap: 10,
-    maxCap: 12,
-    start: "2024-07-05T09:00:00",
-    end: "2024-07-05T10:00:00",
-  },
-  {
-    id: 9,
-    cap: 10,
-    maxCap: 12,
-    start: "2024-07-05T10:00:00",
-    end: "2024-07-05T11:00:00",
-  },
-  {
-    id: 8,
-    cap: 10,
-    maxCap: 12,
-    start: "2024-07-05T11:00:00",
-    end: "2024-07-05T12:00:00",
-  },
-  {
-    id: 7,
-    cap: 10,
-    maxCap: 12,
-    start: "2024-07-05T12:00:00",
-    end: "2024-07-05T13:00:00",
-  },
-];
+import TimeSlotsNotFound from "./TimeSlotsNotFound";
+import { motion } from "framer-motion";
 
 const formatTime = (date) => {
   return new Date(date).toLocaleString("de-DE", {
@@ -41,14 +12,14 @@ const formatTime = (date) => {
   });
 };
 
-export default function TimeSlots() {
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState();
+export default function TimeSlots({ timeSlots }) {
+  const { bookingInfo, selectedDate, selectedTimeSlot, setSelectedTimeSlot } =
+    useBookingStore();
+  const { baby, adult, kid, teenager } = bookingInfo;
 
-  const handleTimeSlotChange = (event) => {
-    setSelectedTimeSlot(event.target.value);
+  const handleTimeSlotChange = (timeSlot) => {
+    setSelectedTimeSlot(timeSlot);
   };
-
-  const selectedDate = new Date();
 
   return (
     <div className={styles.timeslots_container}>
@@ -60,21 +31,44 @@ export default function TimeSlots() {
           year: "2-digit",
         })}
       </p>
-      <div className={styles.timeslots}>
-        {timeSlots.map((timeSlot) => {
-          const formatedStartTime = formatTime(timeSlot.start);
-          const formatedEndTime = formatTime(timeSlot.end);
-          return (
-            <TimeSlot
-              key={timeSlot.id}
-              startTime={formatedStartTime}
-              endTime={formatedEndTime}
-              selectedTimeSlot={selectedTimeSlot}
-              timeSlotChange={handleTimeSlotChange}
-            />
-          );
-        })}
-      </div>
+      <motion.div
+        key={selectedDate}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className={timeSlots && timeSlots.length > 0 ? styles.timeslots : ""}
+      >
+        {timeSlots && timeSlots.length > 0 ? (
+          timeSlots.map((timeSlot) => {
+            const formatedStartTime = formatTime(timeSlot.start);
+            const formatedEndTime = formatTime(timeSlot.end);
+
+            if (
+              baby.count + adult.count + kid.count + teenager.count >
+              timeSlot.maxCap - timeSlot.cap
+            ) {
+              selectedTimeSlot &&
+              baby.count + adult.count + kid.count + teenager.count >
+                selectedTimeSlot.maxCap - selectedTimeSlot.cap
+                ? setSelectedTimeSlot(null)
+                : "";
+              return "";
+            }
+            return (
+              <TimeSlot
+                key={timeSlot.id}
+                timeSlot={timeSlot}
+                startTime={formatedStartTime}
+                endTime={formatedEndTime}
+                selectedTimeSlot={selectedTimeSlot}
+                timeSlotChange={handleTimeSlotChange}
+              />
+            );
+          })
+        ) : (
+          <TimeSlotsNotFound />
+        )}
+      </motion.div>
     </div>
   );
 }

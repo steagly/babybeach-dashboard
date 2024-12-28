@@ -1,0 +1,16 @@
+export default function ArrowDatePicker() {
+  return (
+    <svg
+      width="7"
+      height="10"
+      viewBox="0 0 7 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0.158203 8.81667L3.97487 5L0.158203 1.175L1.3332 0L6.3332 5L1.3332 10L0.158203 8.81667Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}

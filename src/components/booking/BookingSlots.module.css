@@ -1,16 +1,27 @@
 .timeslots_container {
-  max-width: 514px;
+  display: flex;
+  width: 554px;
+  flex-direction: column;
+  border-radius: 4px;
 }
 
 .timeslots {
   display: grid;
   gap: 20px;
-  grid-template-columns: repeat(3, 158px);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 3fr));
 }
 
 .selected_date {
   font-size: 18px;
-  color: #838383;
+  color: #525252;
   font-weight: 600;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+@media screen and (max-width: 1350px) {
+  .timeslots_container {
+    width: 400px;
+  }
+  .timeslots {
+  }
 }

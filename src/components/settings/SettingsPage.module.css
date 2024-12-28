@@ -1,0 +1,146 @@
+.settings_body {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.main_container {
+  color: #525252;
+  max-width: 780px;
+  border-radius: 6px;
+  outline: 1px solid #dedede;
+}
+
+.accordion_body {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  gap: 14px;
+  padding: 0 14px;
+  transition:
+    max-height 0.3s ease,
+    padding 0.3s ease;
+}
+
+.accordion_arrow {
+  transform: rotate(90deg);
+  transition: transform 0.3s;
+}
+
+.accordion_body.opened {
+  max-height: 800px;
+  padding: 14px;
+  overflow: visible;
+}
+
+.icon {
+  fill: #525252;
+}
+
+.select_header.opened .icon {
+  fill: #fff500;
+}
+
+.select_header.opened .setting_icon {
+  background-color: #9e6fbb;
+}
+
+.hour_container {
+  display: flex;
+  gap: 80px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle_wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.title h4 {
+  line-height: 20px;
+  font-weight: 600;
+  color: #525252;
+  margin: 0;
+}
+
+.select_header.opened .title h4 {
+  color: #ffffff;
+}
+
+.select_header.opened .accordion_arrow {
+  transform: rotate(-90deg);
+  transition: transform 0.3s;
+}
+
+.day {
+  width: 90px;
+}
+
+.wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.select_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 10px 14px 10px 10px;
+  gap: 20px;
+  color: #838383;
+  transition: all 0.3s;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.select_header.opened {
+  background-color: #b17ed0;
+  color: #ffffff;
+}
+
+.setting_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #dedede;
+  border-radius: 6px;
+}
+
+.toggle {
+  position: relative;
+  background-color: #838383;
+  border: 1px solid transparent;
+  border-radius: 50px;
+  width: 46px;
+  height: 22px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle .thumb {
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  background-color: #ffffff;
+  border-radius: 100%;
+  left: 2px;
+  top: 50%;
+  transform: translate(0, -50%);
+  transition: left 0.3s ease;
+}
+
+.toggle.toggled {
+  background-color: #b17ed0;
+  transition: background-color 0.3s;
+}
+
+.toggle.toggled .thumb {
+  left: calc(46px - 20px);
+}

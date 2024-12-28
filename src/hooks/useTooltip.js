@@ -14,7 +14,7 @@ const useTooltip = () => {
       visible: true,
       label,
       position: {
-        left: rect.right + 10,
+        left: rect.right + 14,
         top: rect.top + rect.height / 2,
       },
     });

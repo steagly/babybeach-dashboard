@@ -4,10 +4,10 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 700;
-  color: #838383;
-  border-bottom: 1px solid #dedede;
-  height: 126px;
+  color: white;
+  height: 102px;
   text-transform: uppercase;
+  background-color: #b17ed0;
 }
 
 .wrapper button {
@@ -16,6 +16,7 @@
   gap: 12px;
   border: none;
   background: none;
+  color: white;
   cursor: pointer;
   border: 2px solid #ffeb01;
   border-radius: 6px;
@@ -82,12 +83,47 @@
 }
 
 .body_wrapper {
-  max-width: 1320px;
-  margin: 0 auto;
-  margin-top: 20px;
+  width: 100%;
+  max-width: 66%;
 }
 
 .booking_main {
+  gap: 22px;
+}
+
+.person_cards {
+  position: relative;
   display: flex;
-  gap: 32px;
+  gap: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border: 1px solid transparent;
+  transition: border 0.3s;
+}
+
+.booking_date {
+  position: relative;
+  display: flex;
+  border-radius: 6px;
+  gap: 20px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0px 0px 8px 0px rgba(41, 41, 41, 0.05);
+  border: 1px solid transparent;
+  transition: border 0.3s;
+}
+
+.main_content {
+  display: flex;
+  margin: 0 auto;
+  gap: 20px;
+  max-width: 1320px;
+  margin-top: 20px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.error {
+  border: 1px solid #ea6662;
+  border-radius: 6px;
 }
