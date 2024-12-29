@@ -4,6 +4,7 @@ import { bookingServices } from "../configs/booking/booking";
 
 const useBookingStore = create(
   devtools((set) => ({
+    step: 0,
     selectedDate: new Date(),
     selectedTimeSlot: {},
     timeSlots: [],
@@ -33,6 +34,12 @@ const useBookingStore = create(
       },
     },
 
+    changeStep: () =>
+      set((state) => ({
+        ...state,
+        step: state.step === 0 ? 1 : 0,
+      })),
+
     changeDate: (date) => set({ selectedDate: date }),
 
     setTimeSlots: (timeSlots) => set({ timeSlots: timeSlots }),
@@ -40,7 +47,10 @@ const useBookingStore = create(
     setSelectedTimeSlot: (timeSlot) =>
       set((state) => ({
         selectedTimeSlot: timeSlot,
-        bookingInfo: { ...state.bookingInfo, date: "" },
+        bookingInfo: {
+          ...state.bookingInfo,
+          date: timeSlot?.start,
+        },
       })),
 
     changePersonCount: (name, action) =>

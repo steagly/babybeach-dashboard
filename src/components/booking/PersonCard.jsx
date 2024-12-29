@@ -8,9 +8,14 @@ function PersonCard({
   type,
   bookingInfo,
   price,
+  error,
 }) {
   return (
-    <div className={styles.person_card}>
+    <div
+      className={
+        error ? `${styles.person_card} ${styles.error}` : styles.person_card
+      }
+    >
       <div className={styles.card_item}>
         <div className={styles.body_wrapper}>
           <p className={styles.title}>{children}</p>

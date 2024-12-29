@@ -4,13 +4,25 @@ import timerIcon from "../../assets/landing/timer_gradient.svg";
 import babyIcon from "../../assets/baby.svg";
 import adultIcon from "../../assets/adult.svg";
 import useBookingStore from "../../store/bookingStore";
+import SubmitButton from "./SubmitButton";
+import { useFormContext } from "react-hook-form";
 
-export default function BookingSummary({ bookingInfo }) {
+export default function BookingSummary({
+  bookingInfo,
+  changeStep,
+  step,
+  onSubmit,
+}) {
+  const {
+    trigger,
+    formState: { errors },
+  } = useFormContext();
+
   const selectedTimeSlot = useBookingStore((state) => state.selectedTimeSlot);
 
   const formatedDate = () => {
     if (!selectedTimeSlot || !selectedTimeSlot.start) {
-      return "no date";
+      return "";
     }
 
     const date = new Date(selectedTimeSlot.start);
@@ -27,10 +39,6 @@ export default function BookingSummary({ bookingInfo }) {
 
     return `${formattedDate} ${formattedTime}`;
   };
-
-  if (!selectedTimeSlot) {
-    return null;
-  }
 
   return (
     <div className={styles.booking_summary}>
@@ -49,7 +57,7 @@ export default function BookingSummary({ bookingInfo }) {
               <img src={timerIcon} alt="" />
               <div className={styles.date_info}>
                 <p className={styles.title}>Duration</p>
-                <p>{selectedTimeSlot ? "45 minutes" : "no date"}</p>
+                <p>{selectedTimeSlot ? "45 minutes" : ""}</p>
               </div>
             </div>
           </div>
@@ -98,6 +106,16 @@ export default function BookingSummary({ bookingInfo }) {
                   bookingInfo.adult.count * bookingInfo.adult.price
               )} €`}
             </p>
+          </div>
+          <div className={styles.booking_btns}>
+            <SubmitButton
+              onSubmit={onSubmit}
+              changeStep={changeStep}
+              trigger={trigger}
+              errors={errors}
+              styles={styles}
+              step={step}
+            ></SubmitButton>
           </div>
         </div>
       </div>

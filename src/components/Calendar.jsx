@@ -13,10 +13,10 @@ import teenagerIcon from "../assets/teenager.svg";
 import cardsIcon from "../assets/cards_dark.svg";
 import DatePicker from "./DatePicker";
 import { motion } from "framer-motion";
-import axios from "axios";
 import useCalendarStore from "../store/calendarStore";
 import useModalStore from "../store/modalStore";
 import getEvents from "../api/events";
+import EditEventModal from "./EventModal";
 
 export default function Calendar() {
   const setIsOpen = useModalStore((state) => state.setIsOpen);
@@ -52,9 +52,7 @@ export default function Calendar() {
 
   const handleDayButton = () => {
     const today = new Date();
-    if (!today.getDay === 1) {
-      setSelectedDate(today);
-    }
+    setSelectedDate(today);
     setCalendarFormat("day");
   };
 
@@ -89,7 +87,7 @@ export default function Calendar() {
 
   return (
     <>
-      <Overlay mode={mode} />
+      <Overlay mode={mode} ModalElement={EditEventModal} />
       <Header sectionName={"Calendar"} />
       <motion.div
         className={styles.calendar_container}
@@ -101,6 +99,8 @@ export default function Calendar() {
           <DatePicker
             changeDay={handleDateButton}
             selectedDate={selectedDate}
+            isPastDisabled={false}
+            checkAvailability={false}
           />
           <button
             className={styles.create_appo_btn}
@@ -210,51 +210,59 @@ export default function Calendar() {
                         events
                           .filter((event) => {
                             const date = new Date(event.date);
-                            return (
-                              date
-                                .toISOString()
-                                .split("T")[1]
-                                .substring(0, 2) === hour
-                            );
+
+                            const formattedTime = date.toLocaleString("de-DE", {
+                              timeZone: "Europe/Berlin",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            });
+
+                            const eventHour = formattedTime.split(":")[0];
+
+                            return eventHour === hour;
                           })
-                          .map((event) => (
-                            <motion.div
-                              className={styles.event_container}
-                              onClick={() => handleEditEvent(event)}
-                              key={event.id}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <div className={styles.event_name}>
-                                <img src={eventName} alt="" />
-                                <p>{`${event.firstName} ${event.lastName}`}</p>
-                              </div>
-                              <div className={styles.visitors}>
-                                <div className={styles.visitors_item}>
-                                  <img src={adultIcon} alt="" />
-                                  <p>{event.adult}</p>
+                          .map((event) => {
+                            const { participants } = event;
+
+                            return (
+                              <motion.div
+                                className={styles.event_container}
+                                onClick={() => handleEditEvent(event)}
+                                key={event.id}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <div className={styles.event_name}>
+                                  <img src={eventName} alt="" />
+                                  <p>{`${event.firstName} ${event.lastName}`}</p>
                                 </div>
-                                <div className={styles.visitors_item}>
-                                  <img src={kidIcon} alt="" />
-                                  <p>{event.kid}</p>
+                                <div className={styles.visitors}>
+                                  <div className={styles.visitors_item}>
+                                    <img src={adultIcon} alt="" />
+                                    <p>{participants.adult}</p>
+                                  </div>
+                                  <div className={styles.visitors_item}>
+                                    <img src={kidIcon} alt="" />
+                                    <p>{participants.kid}</p>
+                                  </div>
+                                  <div className={styles.visitors_item}>
+                                    <img src={babyIcon} alt="" />
+                                    <p>{participants.baby}</p>
+                                  </div>
+                                  <div className={styles.visitors_item}>
+                                    <img src={teenagerIcon} alt="" />
+                                    <p>{participants.teenager}</p>
+                                  </div>
+                                  <div className={styles.visitors_item_card}>
+                                    <img src={cardsIcon} alt="" />
+                                    <p>{event.card ? event.card : "-"}</p>
+                                  </div>
                                 </div>
-                                <div className={styles.visitors_item}>
-                                  <img src={babyIcon} alt="" />
-                                  <p>{event?.baby}</p>
-                                </div>
-                                <div className={styles.visitors_item}>
-                                  <img src={teenagerIcon} alt="" />
-                                  <p>0</p>
-                                </div>
-                                <div className={styles.visitors_item_card}>
-                                  <img src={cardsIcon} alt="" />
-                                  <p>{event.card ? event.card : "-"}</p>
-                                </div>
-                              </div>
-                            </motion.div>
-                          ))}
+                              </motion.div>
+                            );
+                          })}
                     </div>
                   )}
                 </>

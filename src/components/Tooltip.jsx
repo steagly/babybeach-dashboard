@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const mountElement = document.getElementById("overlay");
 
-const Tooltip = ({ children, position, visible }) => {
+const Tooltip = ({ children, position }) => {
   const { sidebarIsOpen } = useSideBarStore();
 
   return createPortal(

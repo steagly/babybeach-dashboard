@@ -9,6 +9,7 @@ import Appointment from "./components/booking/BookingMain";
 import Login from "./components/Login";
 import Calendar from "./components/Calendar";
 import Cards from "./components/Cards";
+import SettingsPage from "./components/settings/SettingsPage";
 import { refreshAccessToken } from "./utils/refreshToken";
 import useAuthStore from "./store/authStore";
 import { useState } from "react";
@@ -44,7 +45,7 @@ const Main = () => {
           element: <AuthRoute element={<Login />} />,
         },
         {
-          path: "landing",
+          path: "booking",
           element: <Appointment />,
         },
         {
@@ -58,6 +59,10 @@ const Main = () => {
             {
               path: "cards",
               element: <Cards />,
+            },
+            {
+              path: "settings",
+              element: <SettingsPage />,
             },
           ],
         },

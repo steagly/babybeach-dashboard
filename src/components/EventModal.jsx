@@ -4,27 +4,58 @@ import appointIcon from "../assets/appoint_editing.svg";
 import adultIcon from "../assets/adult.svg";
 import kidIcon from "../assets/kid.svg";
 import babyIcon from "../assets/baby.svg";
+import SaveIcon from "./icons/SaveIcon";
+import CloseIcon from "./icons/CloseIcon";
 import teenagerIcon from "../assets/teenager.svg";
+import Button from "../ui/buttons/Button";
 import { useEffect, useState } from "react";
 import useCalendarStore from "../store/calendarStore";
 import axios from "axios";
 import getEvents from "../api/events";
+import TrashIcon from "./icons/TrashIcon";
 
-export default function EditEventModal({ setIsOpen, mode }) {
+const initialState = {
+  date: new Date().toISOString(),
+  lastName: "",
+  firstName: "",
+  email: "",
+  phone: "",
+  salutation: "",
+  card: null,
+  participants: {
+    adult: 0,
+    kid: 0,
+    baby: 0,
+    teenager: 0,
+  },
+};
+
+export default function EditEventModal({ setIsOpen, mode, variants }) {
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const deleteEvent = useCalendarStore((state) => state.deleteEvent);
   const selectedEvent = useCalendarStore((state) => state.selectedEvent);
   const setEvents = useCalendarStore((state) => state.setEvents);
-  const [event, setEvent] = useState({});
+  const [event, setEvent] = useState(initialState);
+  const [updatedEvent, setUpdatedEvent] = useState({});
+  const [loading, setLoading] = useState();
 
   const closeModal = () => {
     setIsOpen(false);
   };
 
   async function handleCreateEvent(event) {
+    const { localDate, time, date, ...rest } = event;
+
+    const dateNoTimeZone = date.split(".")[0];
+    const dateUTC = new Date(dateNoTimeZone).toISOString();
+
     try {
-      await axios.post("http://localhost:5001/api/events", event);
+      await axios.post("http://localhost:5001/api/events", {
+        date: dateUTC,
+        ...rest,
+      });
       closeModal();
+      getEvents(selectedDate, setEvents);
     } catch (error) {
       console.log(error.message);
     }
@@ -46,12 +77,10 @@ export default function EditEventModal({ setIsOpen, mode }) {
   }
 
   async function handleUpdateEvent(event) {
-    const { time, localDate, ...eventToSend } = event;
-
     try {
       const response = await axios.put(
         `http://localhost:5001/api/events/${event.id}`,
-        eventToSend
+        updatedEvent
       );
 
       if (response.status === 200) {
@@ -67,7 +96,7 @@ export default function EditEventModal({ setIsOpen, mode }) {
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
-      setEvent({});
+      setEvent(initialState);
     }
   };
 
@@ -80,12 +109,21 @@ export default function EditEventModal({ setIsOpen, mode }) {
         const localDate = inputISODate.split("T")[0];
 
         const originalDate = new Date(prevState.date);
-        const hours = originalDate.getUTCHours();
-        const minutes = originalDate.getUTCMinutes();
+        const hours = originalDate.getHours();
+        const minutes = originalDate.getMinutes();
 
         const updatedISODate = new Date(inputISODate);
-        updatedISODate.setUTCHours(hours);
-        updatedISODate.setUTCMinutes(minutes);
+        updatedISODate.setHours(hours);
+        updatedISODate.setMinutes(minutes);
+
+        console.log(updatedISODate.toISOString());
+
+        setUpdatedEvent((prevState) => {
+          return {
+            ...prevState,
+            date: updatedISODate.toISOString(),
+          };
+        });
 
         return {
           ...prevState,
@@ -96,10 +134,15 @@ export default function EditEventModal({ setIsOpen, mode }) {
         const [hours, minutes] = value.split(":").map(Number);
 
         const inputISODate = new Date(prevState.date);
-        inputISODate.setUTCHours(hours);
-        inputISODate.setUTCMinutes(minutes);
+        inputISODate.setHours(hours);
+        inputISODate.setMinutes(minutes);
 
-        console.log(inputISODate);
+        setUpdatedEvent((prevState) => {
+          return {
+            ...prevState,
+            date: inputISODate.toISOString(),
+          };
+        });
 
         return {
           ...prevState,
@@ -107,6 +150,13 @@ export default function EditEventModal({ setIsOpen, mode }) {
           date: inputISODate.toISOString(),
         };
       }
+
+      setUpdatedEvent((prevState) => {
+        return {
+          ...prevState,
+          [name]: value,
+        };
+      });
 
       return {
         ...prevState,
@@ -117,8 +167,9 @@ export default function EditEventModal({ setIsOpen, mode }) {
 
   const handlePersonChange = (type, action) => {
     setEvent((prevState) => {
+      const currentValue = prevState.participants[type] || 0;
       const newValue =
-        action === "increase" ? prevState[type] + 1 : prevState[type] - 1;
+        action === "increase" ? currentValue + 1 : currentValue - 1;
 
       const minValue = 0;
       const maxValue = 10;
@@ -129,9 +180,22 @@ export default function EditEventModal({ setIsOpen, mode }) {
         return prevState;
       }
 
+      setUpdatedEvent((prevState) => {
+        return {
+          ...prevState,
+          participants: {
+            ...prevState.participants,
+            [type]: newValue,
+          },
+        };
+      });
+
       return {
         ...prevState,
-        [type]: newValue,
+        participants: {
+          ...prevState.participants,
+          [type]: newValue,
+        },
       };
     });
   };
@@ -142,43 +206,49 @@ export default function EditEventModal({ setIsOpen, mode }) {
     });
   };
 
-  async function getEvent(selectedEvent) {
+  async function getEvent(id) {
     try {
       const response = await axios.get(
-        `http://localhost:5001/api/events/${selectedEvent.id}`
+        `http://localhost:5001/api/events/${id}`
       );
 
+      setLoading(true);
+
       const { date } = response.data;
+
+      const localDateTime = new Date(date).toLocaleString("de-DE", {
+        timeZone: "Europe/Berlin",
+        month: "2-digit",
+        year: "numeric",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      console.log(localDateTime);
+
       const localDate = date.split("T")[0];
-      const time = date.split("T")[1].substring(0, 5);
+      const time = localDateTime.split(" ")[1].substring(0, 5);
 
       setEvent({ ...response.data, localDate, time });
-      // console.log(`${localDate} - ${time}`);
+      console.log(`${localDate} - ${time}`);
     } catch (error) {
       console.log(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
     if (selectedEvent && mode === "edit") {
-      getEvent(selectedEvent);
+      getEvent(selectedEvent.id);
     } else if (mode === "create") {
-      setEvent(() => {
-        const event = {
-          date: "2024-06-15T10:00:00.000Z",
-          lastName: "",
-          firstName: "",
-          adult: 0,
-          kid: 0,
-          baby: 0,
-          phone: "",
-          card: null,
-        };
-        const localDate = event.date.split("T")[0];
-        const time = event.date.split("T")[1].substring(0, 5);
+      setEvent((prevState) => {
+        const localDate = event?.date.split("T")[0];
+        const time = event?.date.split("T")[1].substring(0, 5);
 
         return {
-          ...event,
+          ...prevState,
           localDate,
           time,
         };
@@ -186,315 +256,279 @@ export default function EditEventModal({ setIsOpen, mode }) {
     }
   }, [selectedEvent, mode]);
 
+  if (loading) {
+    return <p>loading...</p>;
+  }
+
   return (
-    <motion.div
-      className={styles.modal_background}
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.13 }}
-      onClick={handleBackgroundClick}
-    >
-      <div className={styles.modal_content}>
-        <div className={styles.modal_header}>
-          <div className={styles.header_title}>
-            <img src={appointIcon} alt="" />
-            <p>Appointment Editing</p>
-          </div>
-          <button className={styles.close_button} onClick={closeModal}>
-            x
-          </button>
+    <div className={styles.modal_content}>
+      <div className={styles.modal_header}>
+        <div className={styles.header_title}>
+          <img src={appointIcon} alt="" />
+          <p>Appointment Editing</p>
         </div>
-        <div className={styles.modal_main}>
-          <div className={styles.modal_clipboard}>
-            <div
-              className={styles.clipboard_item}
-              onClick={() =>
-                handleCopyText(`${event.firstName} ${event.lastName}`)
-              }
+        <button className={styles.close_button} onClick={closeModal}>
+          x
+        </button>
+      </div>
+      <div className={styles.modal_main}>
+        <div className={styles.modal_clipboard}>
+          <div
+            className={styles.clipboard_item}
+            onClick={() =>
+              handleCopyText(`${event.firstName} ${event.lastName}`)
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="16px"
+              height="16px"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="16px"
-                height="16px"
-              >
-                <path
-                  d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
-                  fill="#525252"
-                />
-              </svg>
-              <h4>Name</h4>
-              <p>{event && `${event.firstName} ${event.lastName}`}</p>
-            </div>
-            <div
-              className={styles.clipboard_item}
-              onClick={() => handleCopyText(event.phone)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="16px"
-                height="16px"
-              >
-                <path
-                  d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
-                  fill="#525252"
-                />
-              </svg>
-              <h4>Telefon</h4>
-              <p>{event && event.phone}</p>
-            </div>
-            <div
-              className={styles.clipboard_item}
-              onClick={() =>
-                handleCopyText(new Date(event.date).toLocaleDateString())
-              }
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="16px"
-                height="16px"
-              >
-                <path
-                  d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
-                  fill="#525252"
-                />
-              </svg>
-              <h4>Date</h4>
-              <p>{event && new Date(event.date).toLocaleDateString()}</p>
-            </div>
-            <div
-              className={styles.clipboard_item}
-              onClick={() =>
-                handleCopyText(`${event.adult} adults ${event.kid} kids`)
-              }
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="16px"
-                height="16px"
-              >
-                <path
-                  d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
-                  fill="#525252"
-                />
-              </svg>
-              <h4>Person</h4>
-              <p>
-                {event &&
-                  `${event.adult === 0 ? "" : event.adult + " adult"} ${event.kid === 0 ? "" : event.kid + " kids"}`}
-              </p>
-            </div>
-          </div>
-          <h3>Appointment Date</h3>
-          <div className={styles.appoin_datetime}>
-            <input
-              id="date"
-              type="date"
-              name="localDate"
-              value={event && event.localDate}
-              onChange={handleChange}
-            />
-            <input
-              id="time"
-              type="time"
-              name="time"
-              value={event && event.time}
-              onChange={handleChange}
-            />
-          </div>
-          <h3>Contact Details</h3>
-          <form className={styles.contact_details}>
-            <div className={styles.initials}>
-              <div className={styles.initials_item}>
-                <label htmlFor="title">Title</label>
-                <input type="text" placeholder="Type a title" id="title" />
-              </div>
-              <div className={styles.initials_item}>
-                <label htmlFor="title">First Name</label>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  name="firstName"
-                  placeholder="Type a first name"
-                  id="firstName"
-                  value={event.firstName}
-                />
-              </div>
-              <div className={styles.initials_item}>
-                <label htmlFor="title">Last Name</label>
-                <input
-                  onChange={handleChange}
-                  type="text"
-                  name="lastName"
-                  placeholder="Type a last name"
-                  value={event.lastName}
-                  id="lastName"
-                />
-              </div>
-            </div>
-            <div className={styles.input_input}>
-              <label htmlFor="title">Email Adress</label>
-              <input
-                type="text"
-                placeholder="Type a email adress name"
-                id="email"
+              <path
+                d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
+                fill="#525252"
               />
-            </div>
-            <div className={styles.input_input}>
-              <label htmlFor="title">Telefon</label>
+            </svg>
+            <h4>Name</h4>
+            <p>{event && `${event.firstName} ${event.lastName}`}</p>
+          </div>
+          <div
+            className={styles.clipboard_item}
+            onClick={() => handleCopyText(event.phone)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="16px"
+              height="16px"
+            >
+              <path
+                d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
+                fill="#525252"
+              />
+            </svg>
+            <h4>Telefon</h4>
+            <p>{event && event.phone}</p>
+          </div>
+          <div
+            className={styles.clipboard_item}
+            onClick={() =>
+              handleCopyText(new Date(event.date).toLocaleDateString())
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="16px"
+              height="16px"
+            >
+              <path
+                d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
+                fill="#525252"
+              />
+            </svg>
+            <h4>Date</h4>
+            <p>{event && new Date(event.date).toLocaleDateString()}</p>
+          </div>
+          <div
+            className={styles.clipboard_item}
+            onClick={() =>
+              handleCopyText(
+                `${event.participants?.adult} adults ${event.participants?.kid} kids`
+              )
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="16px"
+              height="16px"
+            >
+              <path
+                d="M19,3H14.82C14.25,1.44 12.53,0.64 11,1.2C10.14,1.5 9.5,2.16 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7M17,11H7V9H17V11M15,15H7V13H15V15Z"
+                fill="#525252"
+              />
+            </svg>
+            <h4>Person</h4>
+            <p>
+              {event &&
+                `${event.participants?.adult === 0 ? "" : event.participants?.adult + " adult"} ${event.participants?.kid === 0 ? "" : event.participants?.kid + " kids"}`}
+            </p>
+          </div>
+        </div>
+        <h3>Appointment Date</h3>
+        <div className={styles.appoin_datetime}>
+          <input
+            id="date"
+            type="date"
+            name="localDate"
+            value={event && event.localDate}
+            onChange={handleChange}
+          />
+          <input
+            id="time"
+            type="time"
+            name="time"
+            value={event && event.time}
+            onChange={handleChange}
+          />
+        </div>
+        <h3>Contact Details</h3>
+        <form className={styles.contact_details}>
+          <div className={styles.initials}>
+            <div className={styles.initials_item}>
+              <label htmlFor="title">Title</label>
               <input
                 onChange={handleChange}
                 type="text"
-                name="phone"
-                placeholder="Type a phone"
-                value={event.phone}
-                id="phone"
+                placeholder="Type a title"
+                id="salutation"
+                name="salutation"
+                value={event.salutation}
               />
             </div>
-          </form>
-          <div className={styles.person_number}>
-            <div className={styles.person_number_item}>
-              <div className={styles.item_title}>
-                <img src={kidIcon} alt="" />
-                Kids
-              </div>
-              <div className={styles.person_number_buttons}>
-                <button onClick={() => handlePersonChange("kid", "decrease")}>
-                  -
-                </button>
-                <p className={styles.person_count}>{event.kid}</p>
-                <button onClick={() => handlePersonChange("kid", "increase")}>
-                  +
-                </button>
-              </div>
+            <div className={styles.initials_item}>
+              <label htmlFor="title">First Name</label>
+              <input
+                onChange={handleChange}
+                type="text"
+                name="firstName"
+                placeholder="Type a first name"
+                id="firstName"
+                value={event.firstName}
+              />
             </div>
-            <div className={styles.person_number_item}>
-              <div className={styles.item_title}>
-                <img src={adultIcon} alt="" />
-                Adults
-              </div>
-              <div className={styles.person_number_buttons}>
-                <button onClick={() => handlePersonChange("adult", "decrease")}>
-                  -
-                </button>
-                <p className={styles.person_count}>{event.adult}</p>
-                <button onClick={() => handlePersonChange("adult", "increase")}>
-                  +
-                </button>
-              </div>
+            <div className={styles.initials_item}>
+              <label htmlFor="title">Last Name</label>
+              <input
+                onChange={handleChange}
+                type="text"
+                name="lastName"
+                placeholder="Type a last name"
+                value={event.lastName}
+                id="lastName"
+              />
             </div>
-            <div className={styles.person_number_item}>
-              <div className={styles.item_title}>
-                <img src={babyIcon} alt="" />
-                Babys
-              </div>
-              <div className={styles.person_number_buttons}>
-                <button onClick={() => handlePersonChange("baby", "decrease")}>
-                  -
-                </button>
-                <p className={styles.person_count}>{event.baby}</p>
-                <button onClick={() => handlePersonChange("baby", "increase")}>
-                  +
-                </button>
-              </div>
-            </div>
-            <div className={styles.person_number_item}>
-              <div className={styles.item_title}>
-                <img src={teenagerIcon} alt="" />
-                Teenagers
-              </div>
-              <div className={styles.person_number_buttons}>
-                <button>-</button>
-                <p className={styles.person_count}>1</p>
-                <button>+</button>
-              </div>
-            </div>
-            <div>Card</div>
-            <button>12</button>
           </div>
-          <div className={styles.modal_footer}>
-            <p>Created at 17.06.2024 * 21:43</p>
-            <div className={styles.footer_btns}>
-              <button className={styles.close_btn} onClick={closeModal}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  height="16"
-                >
-                  <path
-                    d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
-                    fill="#525252"
-                  />
-                </svg>
-                Close
-              </button>
-              {mode === "edit" ? (
-                <button
-                  className={styles.delete_btn}
-                  onClick={() => handleDeleteEvent(event)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="16"
-                    height="16"
-                  >
-                    <path
-                      d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                      fill="#FFFFFF"
-                    />
-                  </svg>
-                  Delete
-                </button>
-              ) : (
-                ""
-              )}
-              {mode === "edit" ? (
-                <button
-                  className={styles.save_btn}
-                  onClick={() => handleUpdateEvent(event)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="16"
-                    height="16"
-                  >
-                    <path
-                      d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
-                      fill="#FFFFFF"
-                    />
-                  </svg>
-                  Save
-                </button>
-              ) : (
-                <button
-                  className={styles.save_btn}
-                  onClick={() => handleCreateEvent(event)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="16"
-                    height="16"
-                  >
-                    <path
-                      d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"
-                      fill="#FFFFFF"
-                    />
-                  </svg>
-                  Add
-                </button>
-              )}
+          <div className={styles.input_input}>
+            <label htmlFor="title">Email Adress</label>
+            <input
+              onChange={handleChange}
+              type="text"
+              name="email"
+              placeholder="Type a email adress name"
+              id="email"
+              value={event?.email}
+            />
+          </div>
+          <div className={styles.input_input}>
+            <label htmlFor="title">Telefon</label>
+            <input
+              onChange={handleChange}
+              type="text"
+              name="phone"
+              placeholder="Type a phone"
+              value={event.phone}
+              id="phone"
+            />
+          </div>
+        </form>
+        <div className={styles.person_number}>
+          <div className={styles.person_number_item}>
+            <div className={styles.item_title}>
+              <img src={kidIcon} alt="" />
+              Kids
             </div>
+            <div className={styles.person_number_buttons}>
+              <button onClick={() => handlePersonChange("kid", "decrease")}>
+                -
+              </button>
+              <p className={styles.person_count}>{event.participants?.kid}</p>
+              <button onClick={() => handlePersonChange("kid", "increase")}>
+                +
+              </button>
+            </div>
+          </div>
+          <div className={styles.person_number_item}>
+            <div className={styles.item_title}>
+              <img src={adultIcon} alt="" />
+              Adults
+            </div>
+            <div className={styles.person_number_buttons}>
+              <button onClick={() => handlePersonChange("adult", "decrease")}>
+                -
+              </button>
+              <p className={styles.person_count}>{event.participants?.adult}</p>
+              <button onClick={() => handlePersonChange("adult", "increase")}>
+                +
+              </button>
+            </div>
+          </div>
+          <div className={styles.person_number_item}>
+            <div className={styles.item_title}>
+              <img src={babyIcon} alt="" />
+              Babys
+            </div>
+            <div className={styles.person_number_buttons}>
+              <button onClick={() => handlePersonChange("baby", "decrease")}>
+                -
+              </button>
+              <p className={styles.person_count}>{event.participants?.baby}</p>
+              <button onClick={() => handlePersonChange("baby", "increase")}>
+                +
+              </button>
+            </div>
+          </div>
+          <div className={styles.person_number_item}>
+            <div className={styles.item_title}>
+              <img src={teenagerIcon} alt="" />
+              Teenagers
+            </div>
+            <div className={styles.person_number_buttons}>
+              <button
+                onClick={() => handlePersonChange("teenager", "decrease")}
+              >
+                -
+              </button>
+              <p className={styles.person_count}>
+                {event.participants?.teenager}
+              </p>
+              <button
+                onClick={() => handlePersonChange("teenager", "increase")}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div>Card</div>
+          <button>12</button>
+        </div>
+        <div className={styles.modal_footer}>
+          <p>Created at 17.06.2024 * 21:43</p>
+          <div className={styles.footer_btns}>
+            <Button variant="primary_outline" onClick={() => closeModal()}>
+              <CloseIcon width={16} height={16} /> Cancel
+            </Button>
+            {mode === "edit" && (
+              <Button variant="danger" onClick={() => handleDeleteEvent(event)}>
+                <TrashIcon width={16} height={16} /> Delete
+              </Button>
+            )}
+            <Button
+              variant="success"
+              onClick={
+                mode === "edit"
+                  ? () => handleUpdateEvent(event)
+                  : () => handleCreateEvent(event)
+              }
+            >
+              <SaveIcon />
+              {mode === "edit" ? "Update" : "Create"}
+            </Button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

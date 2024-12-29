@@ -2,7 +2,7 @@ import useBookingStore from "../../store/bookingStore";
 import styles from "../booking/BookingSlots.module.css";
 import TimeSlot from "./TimeSlot";
 import TimeSlotsNotFound from "./TimeSlotsNotFound";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const formatTime = (date) => {
   return new Date(date).toLocaleString("de-DE", {
@@ -13,8 +13,9 @@ const formatTime = (date) => {
 };
 
 export default function TimeSlots({ timeSlots }) {
-  const { selectedDate, selectedTimeSlot, setSelectedTimeSlot } =
+  const { bookingInfo, selectedDate, selectedTimeSlot, setSelectedTimeSlot } =
     useBookingStore();
+  const { baby, adult, kid, teenager } = bookingInfo;
 
   const handleTimeSlotChange = (timeSlot) => {
     setSelectedTimeSlot(timeSlot);
@@ -32,15 +33,27 @@ export default function TimeSlots({ timeSlots }) {
       </p>
       <motion.div
         key={selectedDate}
-        initial={{ opacity: 0, translateY: 20 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ duration: 0.4 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
         className={timeSlots && timeSlots.length > 0 ? styles.timeslots : ""}
       >
         {timeSlots && timeSlots.length > 0 ? (
           timeSlots.map((timeSlot) => {
             const formatedStartTime = formatTime(timeSlot.start);
             const formatedEndTime = formatTime(timeSlot.end);
+
+            if (
+              baby.count + adult.count + kid.count + teenager.count >
+              timeSlot.maxCap - timeSlot.cap
+            ) {
+              selectedTimeSlot &&
+              baby.count + adult.count + kid.count + teenager.count >
+                selectedTimeSlot.maxCap - selectedTimeSlot.cap
+                ? setSelectedTimeSlot(null)
+                : "";
+              return "";
+            }
             return (
               <TimeSlot
                 key={timeSlot.id}
