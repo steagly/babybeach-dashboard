@@ -1,0 +1,32 @@
+import styles from "./HourCell.module.css";
+import useCalendarStore from "../../store/calendarStore";
+import { memo } from "react";
+
+function HourCell({ hour }) {
+  const { participantsByHours } = useCalendarStore(
+    (state) => state.dayParticipants
+  );
+
+  return (
+    <div className={styles.hour_cell}>
+      {hour}
+      <div className={styles.person_number}>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M8.00033 2.66666C8.70757 2.66666 9.38585 2.94761 9.88594 3.4477C10.386 3.9478 10.667 4.62608 10.667 5.33332C10.667 6.04057 10.386 6.71884 9.88594 7.21894C9.38585 7.71904 8.70757 7.99999 8.00033 7.99999C7.29308 7.99999 6.6148 7.71904 6.11471 7.21894C5.61461 6.71884 5.33366 6.04057 5.33366 5.33332C5.33366 4.62608 5.61461 3.9478 6.11471 3.4477C6.6148 2.94761 7.29308 2.66666 8.00033 2.66666ZM8.00033 9.33332C10.947 9.33332 13.3337 10.5267 13.3337 12V13.3333H2.66699V12C2.66699 10.5267 5.05366 9.33332 8.00033 9.33332Z"
+            fill="#838383"
+          />
+        </svg>
+        {`${participantsByHours?.[hour.split(":")[0]] ?? 0} / 14`}
+      </div>
+    </div>
+  );
+}
+
+export default memo(HourCell);

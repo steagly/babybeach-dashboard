@@ -25,12 +25,25 @@ button {
   font-family: "Baloo Bhai 2", sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #838383;
+  color: inherit;
+  font: inherit;
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 body,
 html {
-  background-color: #fcf7ff;
+  background-color: #ffffff;
   height: 100%;
   margin: 0;
 }

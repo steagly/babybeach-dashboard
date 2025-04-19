@@ -1,0 +1,17 @@
+.day_participants {
+  display: flex;
+  gap: 10px;
+  border-radius: 4px;
+  min-height: 38px;
+  font-size: 13px;
+  background-color: #ffffff;
+  border: 1px solid #dedede;
+  padding: 0px 14px;
+}
+
+.participant_item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}

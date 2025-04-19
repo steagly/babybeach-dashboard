@@ -3,7 +3,15 @@ import { create } from "zustand";
 const useModalStore = create((set) => ({
   isOpen: false,
   mode: "edit",
-  setIsOpen: () => set((state) => ({ isOpen: !state.isOpen })),
+  ModalComponent: null,
+  modalProps: {},
+  openModal: (ModalComponent, modalProps = {}) =>
+    set(() => ({
+      ModalComponent: ModalComponent,
+      isOpen: true,
+      modalProps: modalProps,
+    })),
+  closeModal: () => set(() => ({ ModalComponent: null, isOpen: false })),
   setMode: (mode) => set(() => ({ mode: mode })),
 }));
 

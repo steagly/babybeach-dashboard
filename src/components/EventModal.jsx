@@ -10,9 +10,11 @@ import teenagerIcon from "../assets/teenager.svg";
 import Button from "../ui/buttons/Button";
 import { useEffect, useState } from "react";
 import useCalendarStore from "../store/calendarStore";
+import useToastNotificationStore from "../store/toastNotificationStore";
 import axios from "axios";
 import getEvents from "../api/events";
 import TrashIcon from "./icons/TrashIcon";
+import useModalStore from "../store/modalStore";
 
 const initialState = {
   date: new Date().toISOString(),
@@ -30,24 +32,31 @@ const initialState = {
   },
 };
 
-export default function EditEventModal({ setIsOpen, mode, variants }) {
+export default function EditEventModal({ setIsOpen, mode }) {
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const deleteEvent = useCalendarStore((state) => state.deleteEvent);
   const selectedEvent = useCalendarStore((state) => state.selectedEvent);
   const setEvents = useCalendarStore((state) => state.setEvents);
+
+  const closeModal = useModalStore((state) => state.closeModal);
+
+  const setToast = useToastNotificationStore((state) => state.setNotification);
+
   const [event, setEvent] = useState(initialState);
   const [updatedEvent, setUpdatedEvent] = useState({});
   const [loading, setLoading] = useState();
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
   async function handleCreateEvent(event) {
-    const { localDate, time, date, ...rest } = event;
+    const { localDate, time, ...rest } = event;
 
-    const dateNoTimeZone = date.split(".")[0];
-    const dateUTC = new Date(dateNoTimeZone).toISOString();
+    const [hours, minutes] = time.split(":").map(Number);
+
+    const localDateTime = new Date(localDate);
+    localDateTime.setHours(hours, minutes, 0, 0);
+
+    const dateUTC = new Date(
+      localDateTime.getTime() - localDateTime.getTimezoneOffset() * 60 * 1000
+    ).toISOString();
 
     try {
       await axios.post("http://localhost:5001/api/events", {
@@ -84,21 +93,18 @@ export default function EditEventModal({ setIsOpen, mode, variants }) {
       );
 
       if (response.status === 200) {
-        console.log("Event updated successfully!");
+        setToast({ message: "Event updated successfully!", type: "success" });
         getEvents(selectedDate, setEvents);
         closeModal();
       }
     } catch (error) {
+      setToast({
+        message: "Error occurs by updating the event",
+        type: "error",
+      });
       console.error("Error updating event:", error.message);
     }
   }
-
-  const handleBackgroundClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-      setEvent(initialState);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -201,9 +207,8 @@ export default function EditEventModal({ setIsOpen, mode, variants }) {
   };
 
   const handleCopyText = (text) => {
-    navigator.clipboard.writeText(text).then(() => {
-      alert(`Text copied to clipboard: ${text}`);
-    });
+    navigator.clipboard.writeText(text);
+    setToast({ message: `${text} copied to clipboard`, type: "info" });
   };
 
   async function getEvent(id) {
