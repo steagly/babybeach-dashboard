@@ -1,0 +1,5 @@
+.presets_skeleton {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}

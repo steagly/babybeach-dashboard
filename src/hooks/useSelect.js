@@ -16,6 +16,7 @@ const useSelect = () => {
       if (
         selectRef.current &&
         !selectRef.current.contains(event.target) &&
+        optionsRef.current &&
         !optionsRef.current.contains(event.target)
       ) {
         setIsOpen(false);

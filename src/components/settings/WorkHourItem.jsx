@@ -50,16 +50,21 @@ export default function WorkHourItem({ workingHour, changeAvailability }) {
   return (
     <div className={styles.hour_container}>
       <div className={styles.toggle_wrapper}>
+        <p className={styles.day}>{getWeekName(weekDay)}</p>
         <ToggleButton
           isAvailable={enabled}
           id={id}
-          changeAvailability={changeAvailability}
+          onChange={changeAvailability}
         />
-        <p className={styles.day}>{getWeekName(weekDay)}</p>
       </div>
 
       {enabled ? (
-        <TimeRangeSelector start={start} end={end} options={selectOptions} />
+        <TimeRangeSelector
+          start={start}
+          end={end}
+          options={selectOptions}
+          id={id}
+        />
       ) : (
         <WorkHourItemClosed />
       )}

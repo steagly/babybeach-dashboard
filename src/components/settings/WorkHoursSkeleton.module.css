@@ -1,0 +1,21 @@
+.hours_skeleton {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.skeleton_item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 6px;
+  background-color: white;
+  justify-content: space-between;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.05);
+}
+
+.time_range {
+  display: flex;
+  gap: 30px;
+}

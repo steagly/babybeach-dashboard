@@ -6,10 +6,12 @@
 }
 
 .calendar {
+  position: relative;
   border-radius: 6px;
   border: 1px solid #dedede;
   border-right: none;
   color: #838383;
+  --calendar_height_px: 94px;
 }
 
 .calendar_container {
@@ -20,6 +22,17 @@
 .calendar_wrapper {
   width: 100%;
   padding-right: 40px;
+}
+
+.header_left_wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.header_right_wrapper {
+  display: flex;
+  gap: 10px;
 }
 
 .button_container {
@@ -51,12 +64,14 @@
 
 .calendar_button {
   background-color: #ffffff;
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid #dedede;
-  padding: 10px 27px 10px 27px;
+  min-height: 38px;
+  padding: 8px 22px 8px 22px;
+  font-size: 14px;
   cursor: pointer;
   outline: none;
-  transition: all 0.4s;
+  transition: color, 0.4s;
 }
 
 .active {
@@ -96,12 +111,18 @@
 .date_button {
   display: flex;
   align-items: center;
+  justify-content: center;
   outline: none;
   background: none;
   border: none;
   cursor: pointer;
   width: 20px;
   height: 20px;
+}
+
+.display_format_buttons {
+  display: flex;
+  gap: 4px;
 }
 
 .refresh_button {
@@ -148,7 +169,6 @@
 .calendar_body {
   display: grid;
   grid-template-columns: 82px repeat(7, 1fr);
-  grid-template-rows: repeat(10, 95px);
 }
 
 .calendar_body_day {
@@ -156,31 +176,37 @@
   grid-template-columns: 82px 1fr;
 }
 
-.hour_cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid #dedede;
-  border-bottom: 1px solid #dedede;
-}
-
-.hour_cell:hover {
-  background-color: #f1ebf4;
-}
-
 .calendar_cell {
+  overflow-y: auto;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid #dedede;
   border-right: 1px solid #dedede;
   position: relative;
-  height: 95px;
+  height: var(--calendar_height_px);
   transition: all 0.2s;
+}
+
+.hour_buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  z-index: 99;
 }
 
 .calendar_cell:hover {
   background-color: #f1ebf4;
+}
+
+.calendar_cell:hover .hour_buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  padding-right: 4px;
+  padding-top: 4px;
 }
 
 .cell_row {
@@ -197,14 +223,16 @@
   background-color: #ffffff;
   border: 2px solid transparent;
   cursor: pointer;
+  will-change: transform;
+  pointer-events: all;
   border-radius: 2px;
   padding: 0px 6px 0px 6px;
-  transition: all 0.3s;
+  transition: border 0.3s;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-}
-
-.event_container:first-child {
-  margin-left: 2px;
+  overflow: hidden;
+  max-width: 193px;
+  overflow: hidden; /* Скрывает содержимое, выходящее за границы */
+  text-overflow: ellipsis;
 }
 
 .event_container:hover {
@@ -217,6 +245,12 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
+}
+
+.event_name p {
+  white-space: nowrap; /* Запрет переноса */
+  overflow: hidden; /* Скрытие избыточного текста */
+  text-overflow: ellipsis; /* Многоточие */
 }
 
 .visitors {
@@ -239,4 +273,53 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.test_container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  pointer-events: none;
+  justify-content: flex-start;
+}
+
+.event_wrapper {
+  position: relative;
+  user-select: none;
+  width: 100%;
+  height: 100%;
+  margin-left: 82px;
+  display: flex;
+  gap: 4px;
+  pointer-events: none;
+}
+
+.timeline {
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #b17ed0;
+}
+
+.timeline p {
+  background-color: #b17ed0;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  width: 82px;
+  padding: 4px;
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  color: white;
+  z-index: 99;
+}
+
+.format_buttons_wrapper {
+  display: flex;
+  gap: 4px;
+  background-color: #ffffff;
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid #dedede;
 }
