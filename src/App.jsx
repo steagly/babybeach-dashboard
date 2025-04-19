@@ -1,12 +1,13 @@
-import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { refreshAccessToken } from "./utils/refreshToken";
-import useAuthStore from "./store/authStore";
+import Overlay from "./components/Overlay";
+import ToastNotification from "./components/notification/ToastNotification";
 import "./index.css";
 
 const App = () => {
   return (
     <div>
+      <Overlay />
+      <ToastNotification />
       <Outlet />
     </div>
   );

@@ -1,4 +1,4 @@
-export default function CloseIcon({ width = 24, height = 24 }) {
+export default function CloseIcon({ width = 14, height = 14 }) {
   return (
     <svg
       width={width}

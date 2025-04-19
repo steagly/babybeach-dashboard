@@ -1,4 +1,11 @@
-export default function ArrowDatePicker() {
+export default function ArrowDatePicker({ direction = "left" }) {
+  const rotations = {
+    up: "rotate(-90deg)",
+    down: "rotate(90deg)",
+    left: "rotate(180deg)",
+    right: "none",
+  };
+
   return (
     <svg
       width="7"
@@ -6,6 +13,7 @@ export default function ArrowDatePicker() {
       viewBox="0 0 7 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={{ transform: rotations[direction], transformOrigin: "center" }}
     >
       <path
         d="M0.158203 8.81667L3.97487 5L0.158203 1.175L1.3332 0L6.3332 5L1.3332 10L0.158203 8.81667Z"

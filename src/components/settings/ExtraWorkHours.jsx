@@ -6,52 +6,53 @@ import CloseIcon from "../icons/CloseIcon";
 import useModalStore from "../../store/modalStore";
 import ConfirmModal from "../modals/ConfirmModal";
 import Overlay from "../Overlay";
+import Button from "../../ui/buttons/Button";
 
 const data = [
   {
-    records: 5,
+    records: "31.01.2025",
     startTime: "08:00",
     endTime: "10:00",
     status: "available",
     duration: "2 Stunden",
   },
   {
-    records: 7,
+    records: "31.01.2025",
     startTime: "10:30",
     endTime: "12:30",
     status: "available",
     duration: "2 Stunden",
   },
   {
-    records: 3,
+    records: "31.01.2025",
     startTime: "13:00",
     endTime: "14:00",
     status: "blocked",
     duration: "4 Stunden",
   },
   {
-    records: 3,
+    records: "31.01.2025",
     startTime: "13:00",
     endTime: "14:00",
     status: "blocked",
     duration: "4 Stunden",
   },
   {
-    records: 3,
+    records: "31.01.2025",
     startTime: "13:00",
     endTime: "14:00",
     status: "experied",
     duration: "4 Stunden",
   },
   {
-    records: 3,
+    records: "31.01.2025",
     startTime: "13:00",
     endTime: "14:00",
     status: "experied",
     duration: "4 Stunden",
   },
   {
-    records: 3,
+    records: "31.01.2025",
     startTime: "13:00",
     endTime: "14:00",
     status: "experied",
@@ -78,7 +79,7 @@ export default function ExtraWorkHours() {
       </div>
       <div className={styles.table}>
         <div className={styles.table_header}>
-          <div className={styles.table_header_cell}>ID</div>
+          <div className={styles.table_header_cell}>Datum</div>
           <div className={styles.table_header_cell}>Von</div>
           <div className={styles.table_header_cell}>Bis</div>
           <div className={styles.table_header_cell}>Zustand</div>
@@ -95,15 +96,12 @@ export default function ExtraWorkHours() {
               </div>
               <div className={styles.table_cell}>{row.duration}</div>
               <div className={styles.buttons_wrapper}>
-                <button className={styles.icon_button}>
+                <Button iconOnly>
                   <EditIcon />
-                </button>
-                <button
-                  className={styles.icon_button}
-                  onClick={() => setIsOpen()}
-                >
+                </Button>
+                <Button iconOnly onClick={() => setIsOpen()}>
                   <CloseIcon />
-                </button>
+                </Button>
               </div>
             </div>
           ))}

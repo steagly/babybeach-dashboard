@@ -2,9 +2,22 @@ import useSelect from "../../hooks/useSelect";
 import styles from "./Select.module.css";
 import SelectOption from "./SelectOption";
 import ClockPlus from "../icons/ClockPlus";
+import ArrowDatePicker from "../icons/ArrowDatePicker";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Select({ options, type, start, end }) {
+export default function Select({
+  id,
+  options,
+  type,
+  start,
+  end,
+  setHoursTime,
+  onChange,
+  suffix = null,
+  size = "default",
+  noBorder = false,
+  defaultValue = null,
+}) {
   const {
     isOpen,
     selectedValue,
@@ -20,13 +33,27 @@ export default function Select({ options, type, start, end }) {
     exit: { opacity: 0, maxHeight: 0 },
   };
 
+  function changeValue(value) {
+    selectValue(value);
+    if (setHoursTime) {
+      setHoursTime(id, value, type);
+    }
+    onChange(value);
+    console.log(value);
+  }
+
   return (
-    <div className={styles.select_container}>
-      <div className={styles.select_box} onClick={toggleOpen} ref={selectRef}>
-        <p className={styles.type}>{type}</p>
+    <div className={`${styles.select_container} ${styles[size]}`}>
+      <div
+        className={`${styles.select_box} ${noBorder && styles.no_border}`}
+        onClick={toggleOpen}
+        ref={selectRef}
+      >
         <p className={styles.select_info}>
-          {selectedValue || (type === "von" ? start : end)}
+          {selectedValue || (type === "start" ? start : end) || defaultValue}
+          {suffix && ` ${suffix}`}
         </p>
+        <ArrowDatePicker direction={isOpen ? "up" : "down"} />
       </div>
       <AnimatePresence>
         {isOpen && (
@@ -38,16 +65,19 @@ export default function Select({ options, type, start, end }) {
             exit="exit"
             ref={optionsRef}
           >
-            <div className={styles.options_header}>
-              <ClockPlus />
-              {selectedValue || start || end}
-            </div>
+            {type && (
+              <div className={styles.options_header}>
+                <ClockPlus />
+                {selectedValue || start || end}
+              </div>
+            )}
             <div className={styles.options_body}>
               {options.map((option) => (
                 <SelectOption
                   key={option.id}
                   option={option}
-                  onSelect={selectValue}
+                  onSelect={changeValue}
+                  suffix={suffix}
                 />
               ))}
             </div>

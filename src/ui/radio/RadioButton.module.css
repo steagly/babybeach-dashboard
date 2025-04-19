@@ -1,0 +1,47 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.custom_radio {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  opacity: 0;
+}
+
+.selected {
+  color: #ffff;
+  background-color: #b17ed0;
+}
+
+.radio_wrapper {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #dedede;
+  border-radius: 4px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  border: 1px solid #dedede;
+}
+
+.circle_selected {
+  color: #525252;
+  background-color: #ffff;
+  border: 1px solid #ffffff;
+}

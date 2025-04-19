@@ -4,20 +4,18 @@
   justify-content: center;
   gap: 6px;
   border-radius: 8px;
+  border: 1px solid #dedede;
   padding: 2px 12px 2px 6px;
 }
 
 .status.blocked {
-  background-color: #f8bebd;
-  color: #8c2c3d;
+  color: #eb3052;
 }
 
 .status.available {
-  background-color: #e5ffe1;
   color: #468d3a;
 }
 
 .status.experied {
-  background-color: #fffdcc;
   color: #8b8607;
 }

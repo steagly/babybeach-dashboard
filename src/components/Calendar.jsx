@@ -1,38 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import arrowLeft from "../assets/arrow_left.svg";
 import arrowRight from "../assets/arrow_right.svg";
 import styles from "./Calendar.module.css";
 import Header from "./Header";
-import Overlay from "./Overlay";
-import timeIcon from "../assets/calendar_time.svg";
-import eventName from "../assets/event_name.svg";
-import adultIcon from "../assets/adult.svg";
-import kidIcon from "../assets/kid.svg";
-import babyIcon from "../assets/baby.svg";
-import teenagerIcon from "../assets/teenager.svg";
-import cardsIcon from "../assets/cards_dark.svg";
+
 import DatePicker from "./DatePicker";
 import { motion } from "framer-motion";
 import useCalendarStore from "../store/calendarStore";
-import useModalStore from "../store/modalStore";
+import useSettingsStore from "../store/settingsStore";
 import getEvents from "../api/events";
 import EditEventModal from "./EventModal";
+import ParticipantsPerDay from "./ParticipantsPerDay";
+import Button from "../ui/buttons/Button";
+import CalendarGrid from "./CalendarGrid";
+import CalendarList from "./CalendarList";
+import Dropdown from "../ui/dropdowns/Dropdown";
+
+import ListIcon from "./icons/ListIcon";
+import CalendarIcon from "./icons/CalendarIcon";
 
 export default function Calendar() {
-  const setIsOpen = useModalStore((state) => state.setIsOpen);
-  const mode = useModalStore((state) => state.mode);
-  const setMode = useModalStore((state) => state.setMode);
-
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
   const calendarFormat = useCalendarStore((state) => state.calendarFormat);
   const setCalendarFormat = useCalendarStore(
     (state) => state.setCalendarFormat
   );
-
-  const events = useCalendarStore((state) => state.events);
   const setEvents = useCalendarStore((state) => state.setEvents);
-  const setSelectedEvent = useCalendarStore((state) => state.setSelectedEvent);
+
+  const displayFormat = useSettingsStore((state) => state.displayFormat);
+  const setDisplayFormat = useSettingsStore((state) => state.setDisplayFormat);
 
   const handleDateButton = (currentDate) => {
     setSelectedDate(currentDate);
@@ -41,13 +38,7 @@ export default function Calendar() {
 
   const handleCreateEvent = () => {
     setMode("create");
-    setIsOpen();
-  };
-
-  const handleEditEvent = (event) => {
-    setMode("edit");
-    setSelectedEvent(event);
-    setIsOpen();
+    openModal(EditEventModal);
   };
 
   const handleDayButton = () => {
@@ -73,21 +64,8 @@ export default function Calendar() {
     }
   }, [selectedDate]);
 
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
-  const hours = ["08", "09", "10", "11", "12", "13", "14", "15", "16", "17"];
-
   return (
     <>
-      <Overlay mode={mode} ModalElement={EditEventModal} />
       <Header sectionName={"Calendar"} />
       <motion.div
         className={styles.calendar_container}
@@ -122,19 +100,22 @@ export default function Calendar() {
         </div>
         <div className={styles.calendar_wrapper}>
           <div className={styles.header}>
-            <div className={styles.button_container}>
-              <button
-                className={`${styles.calendar_button} ${calendarFormat === "day" ? styles.active : ""}`}
-                onClick={handleDayButton}
-              >
-                Day
-              </button>
-              <button
-                className={`${styles.calendar_button} ${calendarFormat === "week" ? styles.active : ""}`}
-                onClick={handleWeekButton}
-              >
-                Week
-              </button>
+            <div className={styles.header_left_wrapper}>
+              <ParticipantsPerDay />
+              <div className={styles.button_container}>
+                <Button
+                  className={`${styles.calendar_button} ${calendarFormat === "day" ? styles.active : ""}`}
+                  onClick={handleDayButton}
+                >
+                  Day
+                </Button>
+                <Button
+                  className={`${styles.calendar_button} ${calendarFormat === "week" ? styles.active : ""}`}
+                  onClick={handleWeekButton}
+                >
+                  Week
+                </Button>
+              </div>
             </div>
             <div className={styles.date_container}>
               <button
@@ -159,116 +140,42 @@ export default function Calendar() {
                 <img src={arrowRight} alt="" />
               </button>
             </div>
-            <button className={styles.refresh_button}>
-              <svg
-                width="17"
-                height="17"
-                viewBox="0 0 17 17"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.5018 4.4979C11.4747 3.47081 10.0651 2.83331 8.49967 2.83331C6.99678 2.83331 5.55544 3.43034 4.49274 4.49304C3.43003 5.55575 2.83301 6.99709 2.83301 8.49998C2.83301 10.0029 3.43003 11.4442 4.49274 12.5069C5.55544 13.5696 6.99678 14.1666 8.49967 14.1666C11.1418 14.1666 13.3447 12.3604 13.9751 9.91665H12.5018C11.9209 11.5671 10.3484 12.75 8.49967 12.75C7.3725 12.75 6.2915 12.3022 5.49447 11.5052C4.69744 10.7082 4.24967 9.62715 4.24967 8.49998C4.24967 7.37281 4.69744 6.29181 5.49447 5.49478C6.2915 4.69775 7.3725 4.24998 8.49967 4.24998C9.67551 4.24998 10.7238 4.73873 11.4888 5.51081L9.20801 7.79165H14.1663V2.83331L12.5018 4.4979Z"
-                  fill="#838383"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className={styles.calendar}>
-            {calendarFormat === "week" ? (
-              <div className={styles.calendar_header}>
-                <div className={styles.time_cell}>
-                  <img src={timeIcon} alt="time icon" />
-                </div>
-                {days.map((day, index) => (
-                  <div key={index} className={styles.day_header}>
-                    {day}
-                  </div>
-                ))}
+            <div className={styles.header_right_wrapper}>
+              <div className={styles.format_buttons_wrapper}>
+                <Button
+                  size="small"
+                  active={displayFormat === "calendar"}
+                  onClick={() => setDisplayFormat("calendar")}
+                >
+                  <CalendarIcon /> Calendar
+                </Button>
+                <Button
+                  size="small"
+                  active={displayFormat === "list"}
+                  onClick={() => setDisplayFormat("list")}
+                >
+                  <ListIcon />
+                  List
+                </Button>
               </div>
-            ) : (
-              ""
-            )}
-            <div
-              className={`${calendarFormat === "week" ? styles.calendar_body : styles.calendar_body_day}`}
-            >
-              {hours.map((hour) => (
-                <>
-                  <div className={styles.hour_cell}>{hour}</div>
-                  {calendarFormat === "week" ? (
-                    days.map((day, index) => (
-                      <div key={index} className={styles.calendar_cell}>
-                        {hour === 9 && day === "Monday" && <p>Hello</p>}
-                      </div>
-                    ))
-                  ) : (
-                    <div
-                      className={`${styles.calendar_cell} ${styles.cell_row}`}
-                      onDoubleClick={handleCreateEvent}
-                    >
-                      {events &&
-                        events
-                          .filter((event) => {
-                            const date = new Date(event.date);
-
-                            const formattedTime = date.toLocaleString("de-DE", {
-                              timeZone: "Europe/Berlin",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            });
-
-                            const eventHour = formattedTime.split(":")[0];
-
-                            return eventHour === hour;
-                          })
-                          .map((event) => {
-                            const { participants } = event;
-
-                            return (
-                              <motion.div
-                                className={styles.event_container}
-                                onClick={() => handleEditEvent(event)}
-                                key={event.id}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.3 }}
-                              >
-                                <div className={styles.event_name}>
-                                  <img src={eventName} alt="" />
-                                  <p>{`${event.firstName} ${event.lastName}`}</p>
-                                </div>
-                                <div className={styles.visitors}>
-                                  <div className={styles.visitors_item}>
-                                    <img src={adultIcon} alt="" />
-                                    <p>{participants.adult}</p>
-                                  </div>
-                                  <div className={styles.visitors_item}>
-                                    <img src={kidIcon} alt="" />
-                                    <p>{participants.kid}</p>
-                                  </div>
-                                  <div className={styles.visitors_item}>
-                                    <img src={babyIcon} alt="" />
-                                    <p>{participants.baby}</p>
-                                  </div>
-                                  <div className={styles.visitors_item}>
-                                    <img src={teenagerIcon} alt="" />
-                                    <p>{participants.teenager}</p>
-                                  </div>
-                                  <div className={styles.visitors_item_card}>
-                                    <img src={cardsIcon} alt="" />
-                                    <p>{event.card ? event.card : "-"}</p>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            );
-                          })}
-                    </div>
-                  )}
-                </>
-              ))}
+              <Dropdown />
+              <Button className={styles.refresh_button}>
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 17 17"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12.5018 4.4979C11.4747 3.47081 10.0651 2.83331 8.49967 2.83331C6.99678 2.83331 5.55544 3.43034 4.49274 4.49304C3.43003 5.55575 2.83301 6.99709 2.83301 8.49998C2.83301 10.0029 3.43003 11.4442 4.49274 12.5069C5.55544 13.5696 6.99678 14.1666 8.49967 14.1666C11.1418 14.1666 13.3447 12.3604 13.9751 9.91665H12.5018C11.9209 11.5671 10.3484 12.75 8.49967 12.75C7.3725 12.75 6.2915 12.3022 5.49447 11.5052C4.69744 10.7082 4.24967 9.62715 4.24967 8.49998C4.24967 7.37281 4.69744 6.29181 5.49447 5.49478C6.2915 4.69775 7.3725 4.24998 8.49967 4.24998C9.67551 4.24998 10.7238 4.73873 11.4888 5.51081L9.20801 7.79165H14.1663V2.83331L12.5018 4.4979Z"
+                    fill="#838383"
+                  />
+                </svg>
+              </Button>
             </div>
           </div>
+          {displayFormat === "calendar" ? <CalendarGrid /> : <CalendarList />}
         </div>
       </motion.div>
     </>
