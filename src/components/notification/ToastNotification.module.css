@@ -1,0 +1,57 @@
+.notifications {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  bottom: 0;
+  right: 0;
+  margin: 20px;
+  z-index: 11;
+}
+
+.notification {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background-color: white;
+  min-width: 240px;
+  border-radius: 6px;
+  padding: 14px 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.toast_content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  border-bottom-left-radius: 6px;
+  background-color: #b17ed0;
+}
+
+.progressBar.warning {
+}
+
+.progressBar.error {
+}
+
+.progressBar.success {
+  background-color: #2ecc71;
+}
+
+.close_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  right: 0;
+  top: 0;
+}

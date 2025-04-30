@@ -1,10 +1,6 @@
 import axios from "axios";
 import useAuthStore from "../store/authStore";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import useTooltip from "../hooks/useTooltip";
-import Tooltip from "./Tooltip";
+import { useNavigate, Link } from "react-router-dom";
 
 import logo from "../assets/logo_light.svg";
 import calendardIcon from "../assets/calendar.svg";
@@ -15,22 +11,23 @@ import settingsIcon from "../assets/settings.svg";
 import exitIcon from "../assets/exit.svg";
 import styles from "./Sidebar.module.css";
 import useSideBarStore from "../store/sidebarStore";
+import { useEffect } from "react";
+import SidebarItem from "./SidebarItem";
 
 function Sidebar() {
   const logout = useAuthStore((state) => state.logout);
-  const { toggleSidebar, sidebarIsOpen } = useSideBarStore();
-  const { tooltip, showTooltip, hideTooltip } = useTooltip();
+  const toggleSidebar = useSideBarStore((state) => state.toggleSidebar);
+  const sidebarIsOpen = useSideBarStore((state) => state.sidebarIsOpen);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const isActive = (path) => {
-    if (sidebarIsOpen) {
-      return location.pathname === path ? styles.link_active : "";
-    } else if (!sidebarIsOpen) {
-      return location.pathname === path ? styles.link_active_notext : "";
-    }
-  };
+  const menuItems = [
+    { name: "Dashboard", path: "/dashboard", icon: dashboardIcon },
+    { name: "Calendar", path: "/dashboard/calendar", icon: calendardIcon },
+    { name: "Cards", path: "/dashboard/cards", icon: cardsIcon },
+    { name: "Statistics", path: "/dashboard", icon: statsIcon },
+    { name: "Settings", path: "/dashboard/settings", icon: settingsIcon },
+  ];
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -50,18 +47,26 @@ function Sidebar() {
     }
   };
 
+  const checkWindowSize = () => {
+    if (window.innerWidth <= 890 && sidebarIsOpen) {
+      toggleSidebar();
+    }
+  };
+
+  useEffect(() => {
+    checkWindowSize();
+
+    window.addEventListener("resize", checkWindowSize);
+
+    return () => window.removeEventListener("resize", checkWindowSize);
+  }, [sidebarIsOpen]);
+
   return (
     <aside
       className={
         sidebarIsOpen ? styles.sidebar : `${styles.sidebar} ${styles.closed}`
       }
     >
-      {tooltip.visible && (
-        <Tooltip position={tooltip.position} visible={tooltip.visible}>
-          {tooltip.label}
-        </Tooltip>
-      )}
-
       <div className={styles.top}>
         <img
           className={
@@ -71,82 +76,33 @@ function Sidebar() {
           alt="logo"
         />
         <button className={styles.close_btn} onClick={toggleSidebar}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="20px"
-            height="20px"
-          >
-            <path
-              d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
-              fill="#525252"
-            />
-          </svg>
+          {!sidebarIsOpen ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
+              <path d="M19,13H3V11H19L15,7L16.4,5.6L22.8,12L16.4,18.4L15,17L19,13M3,6H13V8H3V6M13,16V18H3V16H13Z" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
+              <path d="M5,13L9,17L7.6,18.42L1.18,12L7.6,5.58L9,7L5,11H21V13H5M21,6V8H11V6H21M21,16V18H11V16H21Z" />
+            </svg>
+          )}
         </button>
       </div>
       <div className={styles.center}>
         <ul>
-          <li>
-            <Link
-              className={`${styles.link} ${isActive("/dashboard")}`}
-              onMouseEnter={(e) => showTooltip(e, "Dashboard")}
-              onMouseLeave={hideTooltip}
-              to="/dashboard"
-            >
-              <img src={dashboardIcon} alt="dashboard-icon" />
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`${styles.link} ${isActive("/dashboard/calendar")}`}
-              onMouseEnter={(e) => showTooltip(e, "Calendar")}
-              onMouseLeave={hideTooltip}
-              to="/dashboard/calendar"
-            >
-              <img src={calendardIcon} alt="dashboard-icon" />
-              Calendar
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`${styles.link} ${isActive("/dashboard/cards")}`}
-              onMouseEnter={(e) => showTooltip(e, "Cards")}
-              onMouseLeave={hideTooltip}
-              to="/dashboard/cards"
-            >
-              <img src={cardsIcon} alt="dashboard-icon" />
-              Cards
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={styles.link}
-              onMouseEnter={(e) => showTooltip(e, "Statistics")}
-              onMouseLeave={hideTooltip}
-              to="/dashboard"
-            >
-              <img src={statsIcon} alt="dashboard-icon" />
-              Statistics
-            </Link>
-          </li>
+          {menuItems.map((item) => {
+            return <SidebarItem key={item.name} item={item} />;
+          })}
+
           {sidebarIsOpen ? <p>account</p> : ""}
-          <li>
-            <Link
-              className={`${styles.link} ${isActive("/dashboard/settings")}`}
-              onMouseEnter={(e) => showTooltip(e, "Settings")}
-              onMouseLeave={hideTooltip}
-              to="/dashboard/settings"
-            >
-              <img src={settingsIcon} alt="dashboard-icon" />
-              Settings
-            </Link>
-          </li>
-          <li
-            onClick={handleLogout}
-            onMouseEnter={(e) => showTooltip(e, "Logout")}
-            onMouseLeave={hideTooltip}
-          >
+          <li onClick={handleLogout}>
             <a className={styles.link}>
               <img src={exitIcon} alt="dashboard-icon" />
               logout

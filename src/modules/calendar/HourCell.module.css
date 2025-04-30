@@ -1,0 +1,19 @@
+.hour_cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-right: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
+}
+
+.hour_cell:hover {
+  background-color: #f1ebf4;
+}
+
+.person_number {
+  display: flex;
+  font-size: 13px;
+  align-items: center;
+  gap: 4px;
+}

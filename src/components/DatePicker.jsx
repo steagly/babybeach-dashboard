@@ -207,14 +207,14 @@ export default function DatePicker({
             className={styles.left_arrow}
             onClick={() => changeMonth("prevMonth")}
           >
-            <ArrowDatePicker />
+            <ArrowDatePicker direction="left" />
           </button>
           <div>{`${new Date(currentYear, currentMonth).toLocaleString("de-DE", { month: "long", year: "numeric" })}`}</div>
           <button
             className={styles.right_arrow}
             onClick={() => changeMonth("nextMonth")}
           >
-            <ArrowDatePicker />
+            <ArrowDatePicker direction="right" />
           </button>
         </div>
         <div className={styles.date_grid}>

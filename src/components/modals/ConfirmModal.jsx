@@ -4,10 +4,13 @@ import CloseIcon from "../icons/CloseIcon";
 import TrashIcon from "../icons/TrashIcon";
 import AlertIcon from "../icons/AlertIcon";
 import Button from "../../ui/buttons/Button";
+import useModalStore from "../../store/modalStore";
 
-export default function ConfirmModal({ setIsOpen, variants }) {
+export default function ConfirmModal({ variants }) {
+  const closeModal = useModalStore((state) => state.closeModal);
+
   const handleCloseModal = () => {
-    setIsOpen(false);
+    closeModal();
   };
 
   return (
