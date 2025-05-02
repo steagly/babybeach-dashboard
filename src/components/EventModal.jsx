@@ -221,8 +221,8 @@ export default function EditEventModal({ setIsOpen, mode }) {
 
       const { date } = response.data;
 
-      const localDateTime = new Date(date).toLocaleString("de-DE", {
-        timeZone: "Europe/Berlin",
+      const localDateTime = new Date(date).toLocaleString("ru-BY", {
+        timeZone: "Europe/Minsk",
         month: "2-digit",
         year: "numeric",
         day: "2-digit",
