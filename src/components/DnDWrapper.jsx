@@ -18,7 +18,7 @@ import styles from "./Calendar.module.css";
 
 import { calculateCollisions } from "../utils/detectEventCollisions";
 import getNewTimeFromPosition from "../utils/newTimeFormPosition";
-import roundToGrid from "../utils/roundToGrid";
+import { snapToGrid, roundToGrid } from "../utils/dndUtils";
 
 import BookingEventItem from "./BookingEventItem";
 import AcceptModal from "./modals/AcceptModal";
@@ -28,22 +28,19 @@ import useModalStore from "../store/modalStore";
 import useSettingsStore from "../store/settingsStore";
 
 function DnDWrapper({ events }) {
+  const GRID_ROW_HEIGHT = 94;
+  const EVENT_CONTAINER_BASE_WIDTH = 196;
+  const ACTIVATION_DRAG_DISTANCE = 5;
+
   const openModal = useModalStore((state) => state.openModal);
   const closeModal = useModalStore((state) => state.closeModal);
   const gridSize = useSettingsStore((state) =>
-    state.freeMovement ? 1 : (94 / 60) * state.stepInterval
+    state.freeMovement ? 1 : (GRID_ROW_HEIGHT / 60) * state.stepInterval
   );
 
+  const snapToGridSize = snapToGrid(gridSize)
   const updateEventTime = useCalendarStore((state) => state.updateEventTime);
 
-  function snapToGrid(args) {
-    const { transform } = args;
-
-    return {
-      ...transform,
-      y: Math.ceil(transform.y / gridSize) * gridSize,
-    };
-  }
 
   const [isActive, setIsActive] = useState(false);
   const [newTop, setNewTop] = useState({
@@ -60,7 +57,7 @@ function DnDWrapper({ events }) {
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
-      distance: 5,
+      distance: ACTIVATION_DRAG_DISTANCE,
     },
   });
 
@@ -122,7 +119,7 @@ function DnDWrapper({ events }) {
         restrictToVerticalAxis,
         restrictToParentElement,
         restrictToWindowEdges,
-        snapToGrid,
+        snapToGridSize,
       ]}
       onDragEnd={handleDragEnd}
       onDragMove={handleDragMove}
@@ -141,7 +138,7 @@ function DnDWrapper({ events }) {
         </div>
         <div ref={setNodeRef} className={styles.event_wrapper}>
           {events &&
-            calculateCollisions(events, 196).map((event) => {
+            calculateCollisions(events, EVENT_CONTAINER_BASE_WIDTH).map((event) => {
               return <BookingEventItem key={event.id} event={event} />;
             })}
         </div>

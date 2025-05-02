@@ -7,6 +7,7 @@ const useSettingsStore = create(
       displayFormat: "calendar",
       freeMovement: false,
       stepInterval: 10,
+      calendarFormat: "default",
       setDisplayFormat: (format) =>
         set(() => ({
           displayFormat: format,

@@ -61,7 +61,7 @@ export default function CalendarGrid() {
 
   return (
     <div className={styles.calendar}>
-      {calendarFormat === "week" ? (
+      {calendarFormat === "week" && (
         <div className={styles.calendar_header}>
           <div className={styles.time_cell}>
             <img src={timeIcon} alt="time icon" />
@@ -72,8 +72,6 @@ export default function CalendarGrid() {
             </div>
           ))}
         </div>
-      ) : (
-        ""
       )}
       <div
         className={`${calendarFormat === "week" ? styles.calendar_body : styles.calendar_body_day}`}
@@ -82,11 +80,14 @@ export default function CalendarGrid() {
           <>
             <HourCell hour={hour} />
             {calendarFormat === "week" ? (
-              days.map((day, index) => (
+              days.map((day, index) => {
+                console.log(events)
+                
+                return (
                 <div key={index} className={styles.calendar_cell}>
-                  {hour === 9 && day === "Monday" && <p>Hello</p>}
+                  {hour === '11:00' && day === "Monday" && <p>Hello</p>}
                 </div>
-              ))
+              )})
             ) : (
               <div
                 className={`${styles.calendar_cell} ${styles.cell_row}`}
