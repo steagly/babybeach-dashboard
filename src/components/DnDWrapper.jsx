@@ -20,6 +20,7 @@ import { calculateCollisions } from "../utils/detectEventCollisions";
 import getNewTimeFromPosition from "../utils/newTimeFormPosition";
 import { snapToGrid, roundToGrid } from "../utils/dndUtils";
 
+
 import BookingEventItem from "./BookingEventItem";
 import AcceptModal from "./modals/AcceptModal";
 
@@ -42,6 +43,7 @@ function DnDWrapper({ events }) {
   const updateEventTime = useCalendarStore((state) => state.updateEventTime);
 
 
+
   const [isActive, setIsActive] = useState(false);
   const [newTop, setNewTop] = useState({
     currentY: 0,
@@ -58,6 +60,7 @@ function DnDWrapper({ events }) {
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: ACTIVATION_DRAG_DISTANCE,
+
     },
   });
 

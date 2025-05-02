@@ -62,6 +62,7 @@ export default function CalendarGrid() {
   return (
     <div className={styles.calendar}>
       {calendarFormat === "week" && (
+
         <div className={styles.calendar_header}>
           <div className={styles.time_cell}>
             <img src={timeIcon} alt="time icon" />
