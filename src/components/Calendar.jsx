@@ -1,30 +1,30 @@
-import React, { useEffect, useMemo } from "react";
-import arrowLeft from "../assets/arrow_left.svg";
-import arrowRight from "../assets/arrow_right.svg";
-import styles from "./Calendar.module.css";
-import Header from "./Header";
+import React, { useEffect, useMemo } from 'react';
+import arrowLeft from '../assets/arrow_left.svg';
+import arrowRight from '../assets/arrow_right.svg';
+import styles from './Calendar.module.css';
+import Header from './Header';
 
-import DatePicker from "../modules/date-picker/components/DatePicker";
-import { motion } from "framer-motion";
-import useCalendarStore from "../store/calendarStore";
-import useSettingsStore from "../store/settingsStore";
-import getEvents from "../api/events";
-import EditEventModal from "./EventModal";
-import ParticipantsPerDay from "./ParticipantsPerDay";
-import Button from "../ui/buttons/Button";
-import CalendarGrid from "./CalendarGrid";
-import CalendarList from "./CalendarList";
-import Dropdown from "../ui/dropdowns/Dropdown";
+import { DatePicker } from '../modules/date-picker';
+import { motion } from 'framer-motion';
+import useCalendarStore from '../store/calendarStore';
+import useSettingsStore from '../store/settingsStore';
+import getEvents from '../api/events';
+import EditEventModal from './EventModal';
+import ParticipantsPerDay from './ParticipantsPerDay';
+import Button from '../ui/buttons/Button';
+import CalendarGrid from './CalendarGrid';
+import CalendarList from './CalendarList';
+import Dropdown from '../ui/dropdowns/Dropdown';
 
-import ListIcon from "./icons/ListIcon";
-import CalendarIcon from "./icons/CalendarIcon";
+import ListIcon from './icons/ListIcon';
+import CalendarIcon from './icons/CalendarIcon';
 
 export default function Calendar() {
   const selectedDate = useCalendarStore((state) => state.selectedDate);
   const setSelectedDate = useCalendarStore((state) => state.setSelectedDate);
   const calendarFormat = useCalendarStore((state) => state.calendarFormat);
   const setCalendarFormat = useCalendarStore(
-    (state) => state.setCalendarFormat
+    (state) => state.setCalendarFormat,
   );
   const setEvents = useCalendarStore((state) => state.setEvents);
 
@@ -33,23 +33,23 @@ export default function Calendar() {
 
   const handleDateButton = (currentDate) => {
     setSelectedDate(currentDate);
-    setCalendarFormat("day");
+    setCalendarFormat('day');
   };
 
   const handleCreateEvent = () => {
-    setMode("create");
+    setMode('create');
     openModal(EditEventModal);
   };
 
   const handleDayButton = () => {
     const today = new Date();
     setSelectedDate(today);
-    setCalendarFormat("day");
+    setCalendarFormat('day');
   };
 
   const handleWeekButton = () => {
     setSelectedDate(null);
-    setCalendarFormat("week");
+    setCalendarFormat('week');
   };
 
   const changeDay = (dayCount) => {
@@ -66,7 +66,7 @@ export default function Calendar() {
 
   return (
     <>
-      <Header sectionName={"Calendar"} />
+      <Header sectionName={'Calendar'} />
       <motion.div
         className={styles.calendar_container}
         initial={{ opacity: 0, y: -20 }}
@@ -82,7 +82,7 @@ export default function Calendar() {
           />
           <button
             className={styles.create_appo_btn}
-            onClick={() => handleCreateEvent("create")}
+            onClick={() => handleCreateEvent('create')}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -104,13 +104,13 @@ export default function Calendar() {
               <ParticipantsPerDay />
               <div className={styles.button_container}>
                 <Button
-                  className={`${styles.calendar_button} ${calendarFormat === "day" ? styles.active : ""}`}
+                  className={`${styles.calendar_button} ${calendarFormat === 'day' ? styles.active : ''}`}
                   onClick={handleDayButton}
                 >
                   Day
                 </Button>
                 <Button
-                  className={`${styles.calendar_button} ${calendarFormat === "week" ? styles.active : ""}`}
+                  className={`${styles.calendar_button} ${calendarFormat === 'week' ? styles.active : ''}`}
                   onClick={handleWeekButton}
                 >
                   Week
@@ -126,11 +126,11 @@ export default function Calendar() {
               </button>
               <p>
                 {selectedDate &&
-                  selectedDate.toLocaleString("de-DE", {
-                    month: "2-digit",
-                    year: "numeric",
-                    day: "2-digit",
-                    weekday: "long",
+                  selectedDate.toLocaleString('de-DE', {
+                    month: '2-digit',
+                    year: 'numeric',
+                    day: '2-digit',
+                    weekday: 'long',
                   })}
               </p>
               <button
@@ -144,15 +144,15 @@ export default function Calendar() {
               <div className={styles.format_buttons_wrapper}>
                 <Button
                   size="small"
-                  active={displayFormat === "calendar"}
-                  onClick={() => setDisplayFormat("calendar")}
+                  active={displayFormat === 'calendar'}
+                  onClick={() => setDisplayFormat('calendar')}
                 >
                   <CalendarIcon /> Calendar
                 </Button>
                 <Button
                   size="small"
-                  active={displayFormat === "list"}
-                  onClick={() => setDisplayFormat("list")}
+                  active={displayFormat === 'list'}
+                  onClick={() => setDisplayFormat('list')}
                 >
                   <ListIcon />
                   List
@@ -175,7 +175,7 @@ export default function Calendar() {
               </Button>
             </div>
           </div>
-          {displayFormat === "calendar" ? <CalendarGrid /> : <CalendarList />}
+          {displayFormat === 'calendar' ? <CalendarGrid /> : <CalendarList />}
         </div>
       </motion.div>
     </>
