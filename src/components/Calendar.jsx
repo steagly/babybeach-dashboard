@@ -4,7 +4,7 @@ import arrowRight from "../assets/arrow_right.svg";
 import styles from "./Calendar.module.css";
 import Header from "./Header";
 
-import DatePicker from "./DatePicker";
+import DatePicker from "../modules/date-picker/components/DatePicker";
 import { motion } from "framer-motion";
 import useCalendarStore from "../store/calendarStore";
 import useSettingsStore from "../store/settingsStore";
