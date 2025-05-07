@@ -1,4 +1,4 @@
-.date_container {
+.date_picker {
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -6,7 +6,7 @@
   color: #525252;
 }
 
-.date_wrapper {
+.wrapper {
   border: 1px solid #dedede;
   border-radius: 6px;
   padding: 12px;

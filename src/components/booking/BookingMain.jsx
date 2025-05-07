@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import DatePicker from "../DatePicker";
+import DatePicker from "../../modules/date-picker/components/DatePicker";
 import Header from "./BookingHeader";
 import TimeSlots from "./BookingSlots";
 import getTimeSlots from "../../api/booking";
