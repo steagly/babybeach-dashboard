@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import DatePicker from "../../modules/date-picker/components/DatePicker";
-import Header from "./BookingHeader";
-import TimeSlots from "./BookingSlots";
-import getTimeSlots from "../../api/booking";
-import useBookingStore from "../../store/bookingStore";
-import PersonCard from "./PersonCard";
-import BookingSummary from "./BookingSummary";
-import BookingStep2 from "./Step2";
-import { useForm, FormProvider } from "react-hook-form";
-import InputError from "./InputError";
-import SuccessPage from "./SuccessPage";
+import { useState, useEffect } from 'react';
+import { DatePicker } from '../../modules/date-picker';
+import Header from './BookingHeader';
+import TimeSlots from './BookingSlots';
+import getTimeSlots from '../../api/booking';
+import useBookingStore from '../../store/bookingStore';
+import PersonCard from './PersonCard';
+import BookingSummary from './BookingSummary';
+import BookingStep2 from './Step2';
+import { useForm, FormProvider } from 'react-hook-form';
+import InputError from './InputError';
+import SuccessPage from './SuccessPage';
 
-import styles from "./Main.module.css";
-import axios from "axios";
+import styles from './Main.module.css';
+import axios from 'axios';
 
 export default function Appointment() {
   const {
@@ -40,8 +40,8 @@ export default function Appointment() {
   const [isBookingSuccess, setIsBookingSuccess] = useState(false);
 
   const onSubmit = (data) => {
-    console.log("Data submitted:", data);
-    console.log("Selected Time Slot:", data.selectedTimeSlot);
+    console.log('Data submitted:', data);
+    console.log('Selected Time Slot:', data.selectedTimeSlot);
 
     async function bookSlot(data) {
       try {
@@ -75,15 +75,15 @@ export default function Appointment() {
   }, [selectedDate]);
 
   useEffect(() => {
-    setValue("selectedTimeSlot", selectedTimeSlot?.start);
-    register("selectedTimeSlot", {
-      validate: () => selectedTimeSlot || "Wählen Sie bitte einen Termin",
+    setValue('selectedTimeSlot', selectedTimeSlot?.start);
+    register('selectedTimeSlot', {
+      validate: () => selectedTimeSlot || 'Wählen Sie bitte einen Termin',
     });
 
-    setValue("adultNumber", bookingInfo.adult.count);
-    register("adultNumber", {
+    setValue('adultNumber', bookingInfo.adult.count);
+    register('adultNumber', {
       validate: () =>
-        bookingInfo.adult.count >= 1 || "Mindestens ein Erwachsene auswählen",
+        bookingInfo.adult.count >= 1 || 'Mindestens ein Erwachsene auswählen',
     });
   }, [register, selectedTimeSlot, bookingInfo]);
 
